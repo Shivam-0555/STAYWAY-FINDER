@@ -113,7 +113,6 @@ export default function SmartMap({ places, filter = "all", onMarkerClick, flyTo 
         className="w-full h-full absolute inset-0"
         zoomControl={false}
         scrollWheelZoom={true}
-        tap={false} 
       >
         <ZoomControl position="topright" />
         <TileLayer

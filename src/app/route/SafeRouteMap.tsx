@@ -65,7 +65,6 @@ export default function SafeRouteMap({ activeRoute }: { activeRoute: RouteType }
         className="w-full h-full"
         zoomControl={false} // Move to custom position
         scrollWheelZoom={true}
-        tap={false}
       >
         <ZoomControl position="topright" />
         <TileLayer

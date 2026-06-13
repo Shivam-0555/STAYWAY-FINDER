@@ -50,3 +50,4 @@ const places = await Place.find(query).lean();
     return NextResponse.json({ error: "Failed to fetch places" }, { status: 500 });
   }
 }
+ 
