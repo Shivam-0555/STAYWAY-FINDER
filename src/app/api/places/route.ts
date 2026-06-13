@@ -21,8 +21,11 @@ export async function GET(request: Request) {
     }
 
     // Database is connected
-    const query = category && category !== "all" ? { category } : {};
-    const places = await Place.find(query).lean();
+    const query: any = category && category !== "all"
+  ? { category }
+  : {};
+
+const places = await Place.find(query).lean();
 
     // If database is empty, return mock data as fallback for demo purposes
     if (places.length === 0) {
