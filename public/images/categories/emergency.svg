@@ -1,0 +1,7 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="emergencyTitle">
+  <title id="emergencyTitle">Emergency icon</title>
+  <rect width="120" height="120" rx="24" fill="#ef4444" />
+  <path d="M60 30l28 40H32l28-40Z" fill="#fee2e2" />
+  <path d="M60 40v40" stroke="#b91c1c" stroke-width="10" stroke-linecap="round" />
+  <circle cx="60" cy="90" r="8" fill="#b91c1c" />
+</svg>

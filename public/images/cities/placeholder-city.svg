@@ -1,0 +1,10 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="placeholderCityTitle">
+  <title id="placeholderCityTitle">Placeholder city image</title>
+  <rect width="1200" height="700" rx="40" fill="#0f172a" />
+  <path d="M140 420h120v220H140V420Z" fill="#1e293b" />
+  <path d="M340 360h140v280H340V360Z" fill="#334155" />
+  <path d="M580 320h180v340H580V320Z" fill="#475569" />
+  <path d="M860 380h120v260H860V380Z" fill="#1f2937" />
+  <text x="60" y="620" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="72" font-weight="700">Student City</text>
+  <text x="60" y="690" fill="#94a3b8" font-family="Inter, sans-serif" font-size="30">Explore safe stays and services</text>
+</svg>

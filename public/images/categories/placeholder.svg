@@ -1,0 +1,8 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="placeholderTitle">
+  <title id="placeholderTitle">Placeholder icon</title>
+  <rect width="120" height="120" rx="24" fill="#475569" />
+  <path d="M30 36h60v48H30V36Z" fill="#94a3b8" opacity="0.6" />
+  <path d="M36 44h48" stroke="#cbd5e1" stroke-width="8" />
+  <path d="M36 64h48" stroke="#cbd5e1" stroke-width="8" />
+  <path d="M36 84h24" stroke="#cbd5e1" stroke-width="8" />
+</svg>

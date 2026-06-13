@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { FloatingNavbar } from "@/components/FloatingNavbar";
+import { Navbar } from "@/components/ui/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CampusCompass - Smart Student City Map",
-  description: "Navigate your new city safely and find everything you need.",
+  title: "StayWay Finder — Google Maps Inspired Safety App",
+  description: "Find safe stays, food, routes, and essential services in top Indian cities.",
 };
 
 export default function RootLayout({
@@ -24,13 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-    >
-      <body className="min-h-full flex flex-col relative overflow-x-hidden">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <body className="min-h-full bg-white text-slate-900 overflow-x-hidden">
+        <Navbar />
         {children}
-        <FloatingNavbar />
       </body>
     </html>
   );

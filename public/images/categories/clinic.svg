@@ -1,0 +1,8 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="clinicTitle">
+  <title id="clinicTitle">Hospital icon</title>
+  <rect width="120" height="120" rx="24" fill="#ef4444" />
+  <rect x="34" y="30" width="52" height="60" rx="12" fill="#fee2e2" />
+  <path d="M44 52h32" stroke="#b91c1c" stroke-width="10" stroke-linecap="round" />
+  <path d="M54 42v32" stroke="#b91c1c" stroke-width="10" stroke-linecap="round" />
+  <path d="M44 92h32" stroke="#b91c1c" stroke-width="8" />
+</svg>

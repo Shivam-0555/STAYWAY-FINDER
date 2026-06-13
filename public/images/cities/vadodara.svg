@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="600" y1="0" x2="600" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A2338" />
+      <stop offset="100%" stop-color="#102A45" />
+    </linearGradient>
+    <linearGradient id="palace" x1="600" y1="280" x2="600" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F8E4B2" />
+      <stop offset="100%" stop-color="#D8B06A" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)" />
+  <circle cx="220" cy="120" r="70" fill="#FFCB74" />
+  <path d="M120 420H1080V520H120V420Z" fill="#163C64" />
+  <path d="M180 420L180 320C180 304.745 192.745 292 208 292H296C311.255 292 324 304.745 324 320V420H180Z" fill="#F8E4B2" />
+  <path d="M392 420L392 280C392 262.908 407.908 247 425 247H563C580.092 247 596 262.908 596 280V420H392Z" fill="url(#palace)" />
+  <path d="M652 420L652 260C652 242.908 667.908 227 685 227H823C840.092 227 856 242.908 856 260V420H652Z" fill="#E0B96D" />
+  <path d="M916 420L916 350C916 338.954 925.954 329 937 329H1015C1026.05 329 1036 338.954 1036 350V420H916Z" fill="#F4C873" />
+  <rect x="225" y="360" width="180" height="60" rx="10" fill="#F8E4B2" />
+  <rect x="428" y="320" width="260" height="80" rx="12" fill="#F8E4B2" />
+  <rect x="660" y="300" width="260" height="100" rx="12" fill="#E0B96D" />
+  <rect x="930" y="360" width="150" height="60" rx="10" fill="#F4C873" />
+  <path d="M320 280H390V340H320V280Z" fill="#C0904E" />
+  <path d="M470 260H520V320H470V260Z" fill="#C0904E" />
+  <path d="M710 240H750V300H710V240Z" fill="#B48745" />
+  <path d="M940 320H980V380H940V320Z" fill="#D8B06A" />
+  <circle cx="970" cy="340" r="8" fill="#FFFFFF" opacity="0.8" />
+  <circle cx="715" cy="265" r="8" fill="#FFFFFF" opacity="0.8" />
+  <circle cx="510" cy="285" r="8" fill="#FFFFFF" opacity="0.8" />
+</svg>

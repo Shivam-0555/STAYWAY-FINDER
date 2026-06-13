@@ -1,0 +1,21 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="hyderabadTitle">
+  <title id="hyderabadTitle">Hyderabad city skyline illustration</title>
+  <defs>
+    <linearGradient id="hyderabadSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#4338ca" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#hyderabadSky)" />
+  <circle cx="860" cy="220" r="120" fill="#facc15" opacity="0.95" />
+  <rect x="180" y="340" width="140" height="260" rx="20" fill="#1f2937" />
+  <rect x="360" y="300" width="170" height="300" rx="24" fill="#1f2937" />
+  <path d="M700 430c0-60 40-100 80-100s80 40 80 100" fill="#111827" />
+  <path d="M700 430c0-34 27-60 60-60s60 26 60 60v170h-120V430Z" fill="#374151" />
+  <path d="M540 320c0-32 24-58 54-58s54 26 54 58v250H540V320Z" fill="#111827" />
+  <path d="M250 430c0-18 22-26 32-26s32 8 32 26v170H250V430Z" fill="#334155" />
+  <path d="M92 438c0-28 14-55 28-55s28 27 28 55v156H92V438Z" fill="#1e293b" />
+  <path d="M530 520c30-60 90-60 120 0" fill="#fbbf24" opacity="0.6" />
+  <text x="60" y="630" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="72" font-weight="700">Hyderabad</text>
+  <text x="60" y="700" fill="#c7d2fe" font-family="Inter, sans-serif" font-size="30">Charminar city view</text>
+</svg>

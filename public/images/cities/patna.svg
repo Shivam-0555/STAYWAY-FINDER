@@ -1,0 +1,18 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="patnaTitle">
+  <title id="patnaTitle">Patna city skyline illustration</title>
+  <defs>
+    <linearGradient id="patnaSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#071b2c" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#patnaSky)" />
+  <circle cx="880" cy="180" r="100" fill="#22d3ee" opacity="0.9" />
+  <path d="M140 420h120v240H140V420Z" fill="#111827" />
+  <path d="M320 360h150v300H320V360Z" fill="#1f2937" />
+  <path d="M540 320h180v340H540V320Z" fill="#334155" />
+  <rect x="760" y="380" width="100" height="220" rx="20" fill="#111827" />
+  <path d="M220 520c80-80 170-80 240 0" stroke="#7dd3fc" stroke-width="18" fill="none" opacity="0.5" />
+  <text x="60" y="620" fill="#f8fafc" font-family="Inter, sans-serif" font-size="72" font-weight="700">Patna</text>
+  <text x="60" y="690" fill="#c4f1ff" font-family="Inter, sans-serif" font-size="30">River city view</text>
+</svg>

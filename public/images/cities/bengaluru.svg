@@ -1,0 +1,20 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bengaluruTitle">
+  <title id="bengaluruTitle">Bengaluru city skyline illustration</title>
+  <defs>
+    <linearGradient id="bengaluruSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#031321" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bengaluruSky)" />
+  <circle cx="900" cy="160" r="110" fill="#22c55e" opacity="0.95" />
+  <path d="M160 400h120v250H160V400Z" fill="#111827" />
+  <path d="M340 360h150v290H340V360Z" fill="#1f2937" />
+  <path d="M560 320h180v330H560V320Z" fill="#334155" />
+  <path d="M780 380h140v270H780V380Z" fill="#1e293b" />
+  <path d="M950 300h100v350h-100V300Z" fill="#111827" />
+  <circle cx="220" cy="520" r="50" fill="#4ade80" opacity="0.4" />
+  <path d="M60 560c70-80 160-90 240 0" fill="#047857" opacity="0.5" />
+  <text x="60" y="620" fill="#f8fafc" font-family="Inter, sans-serif" font-size="72" font-weight="700">Bengaluru</text>
+  <text x="60" y="690" fill="#a7f3d0" font-family="Inter, sans-serif" font-size="30">Garden city view</text>
+</svg>

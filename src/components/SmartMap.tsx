@@ -37,7 +37,7 @@ const userIcon = L.divIcon({
 });
 
 // Auto-fit map to show all markers on mount + fix size
-function AutoFit({ places, filter }: { places: Place[]; filter: string }) {
+function AutoFit({ places, filter, userLocation }: { places: Place[]; filter: string; userLocation?: [number, number] | null }) {
   const map = useMap();
   
   useEffect(() => {
@@ -49,8 +49,12 @@ function AutoFit({ places, filter }: { places: Place[]; filter: string }) {
     // Initial fix
     setTimeout(() => {
       map.invalidateSize();
-      if (places.length > 0) {
-        const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]));
+      const boundsPoints = [...places.map((p) => [p.lat, p.lng] as [number, number])];
+      if (userLocation) {
+        boundsPoints.push(userLocation);
+      }
+      if (boundsPoints.length > 0) {
+        const bounds = L.latLngBounds(boundsPoints);
         map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
       } else {
         map.setView(DEMO_CENTER, 15);
@@ -58,7 +62,7 @@ function AutoFit({ places, filter }: { places: Place[]; filter: string }) {
     }, 300);
 
     return () => window.removeEventListener('resize', handleResize);
-  }, [map, places, filter]);
+  }, [map, places, filter, userLocation]);
   
   return null;
 }
@@ -119,7 +123,7 @@ export default function SmartMap({ places, filter = "all", onMarkerClick, flyTo 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
-        <AutoFit places={filteredPlaces} filter={filter} />
+        <AutoFit places={filteredPlaces} filter={filter} userLocation={userLocation} />
         <MapController flyTo={flyTo} />
         <MapEvents onMove={() => setShowSearchArea(true)} />
 

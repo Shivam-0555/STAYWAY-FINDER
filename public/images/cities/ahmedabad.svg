@@ -1,0 +1,19 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ahmedabadTitle">
+  <title id="ahmedabadTitle">Ahmedabad city skyline illustration</title>
+  <defs>
+    <linearGradient id="ahmedabadSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#07152d" />
+      <stop offset="100%" stop-color="#0c4a6e" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#ahmedabadSky)" />
+  <circle cx="840" cy="160" r="90" fill="#fb923c" opacity="0.9" />
+  <path d="M170 410h130v240H170V410Z" fill="#111827" />
+  <path d="M350 360h160v290H350V360Z" fill="#1e293b" />
+  <path d="M560 420h100v230H560V420Z" fill="#334155" />
+  <path d="M700 330h120v320H700V330Z" fill="#111827" />
+  <path d="M860 380h80v240h-80V380Z" fill="#475569" />
+  <path d="M250 520c50-80 130-90 190 0" stroke="#fde68a" stroke-width="16" fill="none" opacity="0.6" />
+  <text x="60" y="620" fill="#f8fafc" font-family="Inter, sans-serif" font-size="72" font-weight="700">Ahmedabad</text>
+  <text x="60" y="690" fill="#fce7f3" font-family="Inter, sans-serif" font-size="30">Landmark city</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mumbaiTitle">
+  <title id="mumbaiTitle">Mumbai city skyline illustration</title>
+  <defs>
+    <linearGradient id="mumbaiSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#03121f" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#mumbaiSky)" />
+  <circle cx="920" cy="180" r="100" fill="#f97316" opacity="0.95" />
+  <path d="M140 420l110-40 110 40v180H140V420Z" fill="#111827" />
+  <path d="M460 360h140v240H460V360Z" fill="#1e293b" />
+  <path d="M670 320h120v280H670V320Z" fill="#334155" />
+  <path d="M860 380h80v220h-80V380Z" fill="#111827" />
+  <path d="M570 420c0-30 32-50 64-50s64 20 64 50v178H570V420Z" fill="#475569" />
+  <path d="M200 580c60-40 120-40 180 0" stroke="#fbbf24" stroke-width="18" fill="none" opacity="0.5" />
+  <path d="M0 600h1200v100H0V600Z" fill="#0f172a" />
+  <text x="60" y="620" fill="#f8fafc" font-family="Inter, sans-serif" font-size="72" font-weight="700">Mumbai</text>
+  <text x="60" y="690" fill="#bfdbfe" font-family="Inter, sans-serif" font-size="30">Gateway skyline</text>
+</svg>

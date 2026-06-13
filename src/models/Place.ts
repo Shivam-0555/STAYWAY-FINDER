@@ -9,6 +9,7 @@ export interface IReview {
 export interface IPlace extends Document {
   name: string;
   category: "hostel" | "food" | "bus" | "atm" | "clinic" | "safe-route" | "emergency";
+  city: "Hyderabad" | "Mumbai" | "Bengaluru" | "Ahmedabad" | "Patna";
   lat: number;
   lng: number;
   budget?: number;
@@ -30,6 +31,11 @@ const PlaceSchema = new Schema<IPlace>({
     type: String, 
     required: true,
     enum: ["hostel", "food", "bus", "atm", "clinic", "safe-route", "emergency"]
+  },
+  city: {
+    type: String,
+    required: true,
+    enum: ["Hyderabad", "Mumbai", "Bengaluru", "Ahmedabad", "Patna", "Vadodara"]
   },
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },

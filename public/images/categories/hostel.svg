@@ -1,0 +1,10 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="hostelTitle">
+  <title id="hostelTitle">Hostel icon</title>
+  <rect width="120" height="120" rx="24" fill="#4338ca" />
+  <path d="M30 80V48a10 10 0 0 1 10-10h50a10 10 0 0 1 10 10v32" fill="#c7d2fe" />
+  <path d="M90 80H30" stroke="#a5b4fc" stroke-width="8" stroke-linecap="round" />
+  <path d="M42 56v16" stroke="#3730a3" stroke-width="6" stroke-linecap="round" />
+  <path d="M56 56v16" stroke="#3730a3" stroke-width="6" stroke-linecap="round" />
+  <path d="M70 56v16" stroke="#3730a3" stroke-width="6" stroke-linecap="round" />
+  <path d="M40 100h38" stroke="#818cf8" stroke-width="8" stroke-linecap="round" />
+</svg>

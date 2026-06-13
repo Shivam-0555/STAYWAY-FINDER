@@ -1,0 +1,7 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="foodTitle">
+  <title id="foodTitle">Food icon</title>
+  <rect width="120" height="120" rx="24" fill="#f59e0b" />
+  <path d="M36 72h48l8 24H28l8-24Z" fill="#fbbf24" />
+  <path d="M52 44c0-8 8-16 16-16s16 8 16 16v10H52V44Z" fill="#f3e8ff" />
+  <path d="M44 64h32" stroke="#92400e" stroke-width="6" stroke-linecap="round" />
+</svg>

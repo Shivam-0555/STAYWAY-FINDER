@@ -1,0 +1,8 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="atmTitle">
+  <title id="atmTitle">ATM icon</title>
+  <rect width="120" height="120" rx="24" fill="#10b981" />
+  <rect x="28" y="28" width="64" height="64" rx="12" fill="#d1fae5" />
+  <path d="M42 54h36" stroke="#047857" stroke-width="8" stroke-linecap="round" />
+  <path d="M54 70h12" stroke="#047857" stroke-width="8" stroke-linecap="round" />
+  <path d="M44 86h32" stroke="#047857" stroke-width="8" stroke-linecap="round" />
+</svg>

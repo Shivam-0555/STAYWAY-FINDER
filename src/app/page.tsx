@@ -1,175 +1,164 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { GradientButton } from "@/components/ui/GradientButton";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { Map, ShieldCheck, HeartPulse, Search, MapPin, Utensils, Building2, ShieldAlert } from "lucide-react";
 import Link from "next/link";
+import { GradientButton } from "@/components/ui/GradientButton";
+import { FeatureCard } from "@/components/ui/FeatureCard";
+import { StatisticCard } from "@/components/ui/StatisticCard";
+import { Search, MapPin, Utensils, Building2, ShieldCheck, Home as HomeIcon, ShieldAlert } from "lucide-react";
 
 const HeroMap = dynamic(() => import("@/components/HeroMap"), { ssr: false });
 
+const stats = [
+  { label: "Total Places", value: "58", accent: "blue" },
+  { label: "Hostels", value: "24", accent: "purple" },
+  { label: "Food Spots", value: "18", accent: "amber" },
+  { label: "Hospitals", value: "6", accent: "red" },
+  { label: "Emergency Services", value: "10", accent: "emerald" },
+];
+
 export default function Home() {
   return (
-    <div className="min-h-screen pb-24">
-      {/* Hero Section */}
-      <section className="relative pt-28 pb-16 px-4 md:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10">
-        <div className="flex-1 space-y-6 text-center lg:text-left z-10">
-          {/* Tagline */}
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <section className="relative overflow-hidden bg-white text-slate-900">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.14),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_20%)]" />
+        <div className="relative mx-auto flex max-w-7xl flex-col gap-12 px-4 py-10 md:px-8 lg:flex-row lg:items-center lg:py-24">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="z-10 flex-1"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-              Smart Student City Navigation
-            </span>
+            <div className="inline-flex items-center gap-3 rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm text-slate-700 backdrop-blur-xl">
+              <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
+              Launching a safer student city experience.
+            </div>
+
+            <h1 className="mt-8 max-w-3xl text-5xl font-semibold tracking-tight md:text-6xl text-slate-950">
+              Find Safe Stays, Food, Routes & Essential Services Around You
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
+              StayWay Finder gives students fast access to secure hostels, trusted food spots, emergency services and safe navigational routes in Hyderabad, Mumbai, Bengaluru, Ahmedabad and Patna.
+            </p>
+            <p className="mt-4 max-w-2xl text-sm text-slate-500">
+              Workable across all supported cities — instant safety insights for every student journey.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <Link href="/dashboard">
+                <GradientButton size="lg" className="w-full sm:w-auto">
+                  <MapPin size={18} /> Use My Location
+                </GradientButton>
+              </Link>
+              <Link href="/dashboard">
+                <GradientButton variant="secondary" size="lg" className="w-full sm:w-auto">
+                  <ShieldCheck size={18} /> Explore Cities
+                </GradientButton>
+              </Link>
+            </div>
+
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 leading-tight"
-          >
-            Helping Students Navigate Cities Safely.
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-gray-300 max-w-2xl mx-auto lg:mx-0"
-          >
-            CampusCompass is your smart student city helper. Find hostels, affordable food, and safe routes home with our interactive map and safety score.
-          </motion.p>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
+            className="relative flex-1 overflow-hidden rounded-4xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-900/10 md:p-8"
           >
-            <Link href="/dashboard">
-              <GradientButton size="lg" className="w-full sm:w-auto">
-                <Map className="mr-2" size={20} /> Open Smart Map
-              </GradientButton>
-            </Link>
-            <Link href="/route">
-              <GradientButton variant="secondary" size="lg" className="w-full sm:w-auto">
-                <ShieldCheck className="mr-2" size={20} /> Check Safe Route
-              </GradientButton>
-            </Link>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.18),transparent_32%)]" />
+            <div className="relative flex h-full flex-col gap-6">
+              <div className="rounded-[1.75rem] border border-slate-200 overflow-hidden bg-slate-50 shadow-inner shadow-slate-900/5">
+                <div className="relative h-96 w-full">
+                  <HeroMap />
+                </div>
+              </div>
+
+            </div>
           </motion.div>
         </div>
+      </section>
 
-        {/* REAL Leaflet Map Preview */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex-1 relative w-full max-w-xl"
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-600/20 blur-[120px] rounded-full pointer-events-none" />
-          <div className="relative z-10 rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
+      <section className="bg-slate-50 py-20 px-4 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <p className="text-sm uppercase tracking-[.3em] text-sky-500">Why StayWay Finder</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-950 md:text-5xl">Premium safety features for every student.</h2>
+            <p className="mt-4 text-base text-slate-500">Modern tools, smart search, and safe routes brought together in a startup-grade experience.</p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-4">
+            <FeatureCard
+              title="Smart Search"
+              description="Search hostels, food, ATMs, hospitals and emergency services from one place."
+              icon={<Search size={22} />}
+            />
+            <FeatureCard
+              title="Premium Map"
+              description="See your current location, live markers, and safe routes in a beautiful city map."
+              icon={<MapPin size={22} />}
+            />
+            <FeatureCard
+              title="Emergency Ready"
+              description="One-tap emergency actions for police, ambulance, hospitals and helplines."
+              icon={<ShieldAlert size={22} />}
+            />
+            <FeatureCard
+              title="Student-First UX"
+              description="A polished experience designed for young adults exploring new cities."
+              icon={<HomeIcon size={22} />}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16 px-4 md:px-8">
+        <div className="mx-auto max-w-7xl rounded-4xl overflow-hidden border border-slate-200 bg-slate-50 shadow-2xl shadow-slate-900/10">
+          <div className="px-6 py-8 sm:px-10 sm:py-10">
+            <div className="mb-8 max-w-xl">
+              <p className="text-sm uppercase tracking-[.3em] text-sky-500">Live Safety Map</p>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-950 md:text-4xl">Explore the map of safe student spots.</h2>
+              <p className="mt-4 text-base text-slate-600">See hostels, food, ATM, clinic and emergency markers in one live preview.</p>
+            </div>
+          </div>
+          <div className="h-130 w-full">
             <HeroMap />
           </div>
-        </motion.div>
-      </section>
-
-      {/* Stats Section — Glass Cards */}
-      <section className="px-4 md:px-8 max-w-7xl mx-auto -mt-4 mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {[
-            { icon: MapPin, value: "24+", label: "Hostels & PGs", color: "purple", gradient: "from-purple-500/20 to-purple-900/10", border: "border-purple-500/20" },
-            { icon: Utensils, value: "18+", label: "Food Spots", color: "amber", gradient: "from-amber-500/20 to-amber-900/10", border: "border-amber-500/20" },
-            { icon: Building2, value: "6", label: "Clinics", color: "red", gradient: "from-red-500/20 to-red-900/10", border: "border-red-500/20" },
-            { icon: ShieldAlert, value: "92%", label: "Safety Score", color: "emerald", gradient: "from-emerald-500/20 to-emerald-900/10", border: "border-emerald-500/20" },
-          ].map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 + i * 0.08 }}
-              >
-                <div className={`bg-gradient-to-br ${stat.gradient} backdrop-blur-xl border ${stat.border} rounded-2xl p-5 text-center hover:scale-105 transition-transform`}>
-                  <Icon size={22} className={`mx-auto mb-2 text-${stat.color}-400`} />
-                  <p className={`text-3xl font-black text-${stat.color}-400`}>{stat.value}</p>
-                  <p className="text-xs text-gray-400 mt-1 font-medium">{stat.label}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">Everything You Need</h2>
-          <p className="text-gray-400 text-lg">Designed specifically for students new to the city.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link href="/dashboard" className="block h-full group">
-            <GlassCard hoverEffect className="h-full cursor-pointer group-hover:border-blue-500/50 transition-colors">
-              <div className="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-6">
-                <Search className="text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Smart Search</h3>
-              <p className="text-gray-400">Find PG under ₹5000 or mess under ₹80 with intelligent filters.</p>
-            </GlassCard>
-          </Link>
-
-          <Link href="/route" className="block h-full group">
-            <GlassCard hoverEffect className="h-full cursor-pointer group-hover:border-purple-500/50 transition-colors">
-              <div className="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-6">
-                <ShieldCheck className="text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Safe Routes</h3>
-              <p className="text-gray-400">Night navigation logic that avoids isolated roads and prioritizes main streets.</p>
-            </GlassCard>
-          </Link>
-
-          <Link href="/emergency" className="block h-full group">
-            <GlassCard hoverEffect className="h-full cursor-pointer group-hover:border-pink-500/50 transition-colors">
-              <div className="h-12 w-12 rounded-full bg-pink-500/20 flex items-center justify-center mb-6">
-                <HeartPulse className="text-pink-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Emergency Help</h3>
-              <p className="text-gray-400">One-click SOS and instant navigation to the nearest clinic or hospital.</p>
-            </GlassCard>
-          </Link>
-
-          <Link href="/dashboard" className="block h-full group">
-            <GlassCard hoverEffect className="h-full cursor-pointer group-hover:border-emerald-500/50 transition-colors">
-              <div className="h-12 w-12 rounded-full bg-emerald-500/20 flex items-center justify-center mb-6">
-                <Map className="text-emerald-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Student Reviews</h3>
-              <p className="text-gray-400">Read honest reviews from other students about food quality and hostel safety.</p>
-            </GlassCard>
-          </Link>
         </div>
       </section>
 
-      {/* Safety Banner */}
-      <section className="py-16 px-4 md:px-8 max-w-7xl mx-auto">
-        <GlassCard className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 border-purple-500/30 text-center py-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Never Feel Lost or Unsafe Again</h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-            Our proprietary Safety Score Logic analyzes crowd density, road type, and lighting to give you the most secure path back to your dorm.
-          </p>
-          <Link href="/route">
-            <GradientButton>Try Safe Route Feature</GradientButton>
-          </Link>
-        </GlassCard>
+      <section className="bg-slate-100 py-20 px-4 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-6 lg:grid-cols-5">
+            {stats.map((stat, index) => (
+              <StatisticCard
+                key={stat.label}
+                label={stat.label}
+                value={stat.value}
+                accent={stat.accent as any}
+                className={index === 0 ? "lg:col-span-2" : ""}
+              />
+            ))}
+          </div>
+        </div>
       </section>
-    </div>
+
+      <section className="bg-slate-950 py-20 px-4 md:px-8 text-white">
+        <div className="mx-auto max-w-7xl rounded-4xl border border-white/10 bg-slate-900/90 p-10 shadow-2xl shadow-slate-950/20">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
+            <div>
+              <p className="text-sm uppercase tracking-[.3em] text-sky-300">Stay Connected</p>
+              <h2 className="mt-4 text-4xl font-semibold">Launch your city safety journey with StayWay Finder.</h2>
+              <p className="mt-4 max-w-xl text-slate-300">Trusted by students looking for safe stays, quick food, reliable hospitals, and fast emergency support.</p>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <p className="text-sm uppercase tracking-[.3em] text-slate-400">Get Started</p>
+              <p className="mt-3 text-lg font-semibold text-white">Open the dashboard and begin your city exploration.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
