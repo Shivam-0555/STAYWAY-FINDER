@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Search, MapPin, Coffee, Bus, CreditCard, Stethoscope, X, Star, Navigation, Loader2 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { LocationSwiper } from "@/components/ui/LocationSwiper";
-import { Category, Place, mockPlaces } from "@/data/mockPlaces";
+import { Category, Place } from "@/data/mockPlaces";
 
 const SmartMap = dynamic(() => import("@/components/SmartMap"), { ssr: false });
 
@@ -41,6 +41,8 @@ function DashboardContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [isLoadingPlaces, setIsLoadingPlaces] = useState(true);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [flyTo, setFlyTo] = useState<{ coords: [number, number]; key: number } | null>(null);
   const flyToKeyRef = useRef(0);
@@ -48,18 +50,37 @@ function DashboardContent() {
   const searchRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
+  // Fetch places from backend API
+  useEffect(() => {
+    async function fetchPlaces() {
+      try {
+        const res = await fetch("/api/places");
+        if (res.ok) {
+          const data = await res.json();
+          setPlaces(data);
+        }
+      } catch (error) {
+        console.error("Error fetching places:", error);
+      } finally {
+        setIsLoadingPlaces(false);
+      }
+    }
+    fetchPlaces();
+  }, []);
+
   // Load search from URL if present
   useEffect(() => {
+    if (isLoadingPlaces) return;
     const query = searchParams.get("search");
     if (query) {
       setSearchQuery(query);
-      const matchedPlace = mockPlaces.find(p => p.name.toLowerCase().includes(query.toLowerCase()));
+      const matchedPlace = places.find(p => p.name.toLowerCase().includes(query.toLowerCase()));
       if (matchedPlace) {
         setSelectedPlace(matchedPlace);
         triggerFlyTo([matchedPlace.lat, matchedPlace.lng]);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, isLoadingPlaces, places]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -76,7 +97,7 @@ function DashboardContent() {
   const suggestions = useMemo(() => {
     if (!searchQuery.trim() || searchQuery.length < 2) return [];
     const q = searchQuery.toLowerCase();
-    return mockPlaces
+    return places
       .filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
@@ -89,10 +110,10 @@ function DashboardContent() {
 
   // Panel list filter
   const filteredForPanel = useMemo(() => {
-    let places = filter === "all" ? mockPlaces : mockPlaces.filter((p) => p.category === filter);
+    let filtered = filter === "all" ? places : places.filter((p) => p.category === filter);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      places = places.filter(
+      filtered = filtered.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.address.toLowerCase().includes(q) ||
@@ -100,8 +121,8 @@ function DashboardContent() {
           (p.budget && `${p.budget}`.includes(q))
       );
     }
-    return places;
-  }, [filter, searchQuery]);
+    return filtered;
+  }, [filter, searchQuery, places]);
 
   const triggerFlyTo = (coords: [number, number]) => {
     flyToKeyRef.current += 1;
@@ -314,6 +335,7 @@ function DashboardContent() {
       {/* Map Area */}
       <div className="flex-1 absolute md:relative inset-0 w-full h-full z-0">
         <SmartMap
+          places={places}
           filter={filter}
           onMarkerClick={(place) => { setSelectedPlace(place); triggerFlyTo([place.lat, place.lng]); }}
           flyTo={flyTo}

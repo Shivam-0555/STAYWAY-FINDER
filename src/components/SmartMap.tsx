@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "rea
 import "leaflet/dist/leaflet.css";
 import { Search } from "lucide-react";
 import L from "leaflet";
-import { mockPlaces, Place, Category, DEMO_CENTER } from "@/data/mockPlaces";
+import { Place, Category, DEMO_CENTER } from "@/data/mockPlaces";
 
 const getIcon = (category: Category) => {
   const colorMap: Record<Category, string> = {
@@ -85,15 +85,16 @@ function MapController({ flyTo }: { flyTo: { coords: [number, number]; key: numb
 }
 
 interface SmartMapProps {
+  places: Place[];
   filter?: Category | "all";
   onMarkerClick?: (place: Place) => void;
   flyTo?: { coords: [number, number]; key: number } | null;
   userLocation?: [number, number] | null;
 }
 
-export default function SmartMap({ filter = "all", onMarkerClick, flyTo = null, userLocation = null }: SmartMapProps) {
+export default function SmartMap({ places, filter = "all", onMarkerClick, flyTo = null, userLocation = null }: SmartMapProps) {
   const [showSearchArea, setShowSearchArea] = useState(false);
-  const filteredPlaces = filter === "all" ? mockPlaces : mockPlaces.filter((p) => p.category === filter);
+  const filteredPlaces = filter === "all" ? places : places.filter((p) => p.category === filter);
 
   return (
     <div className="w-full h-full min-h-[400px] md:min-h-0 relative group">
