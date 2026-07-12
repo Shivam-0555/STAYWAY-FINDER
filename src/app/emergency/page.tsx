@@ -120,13 +120,14 @@ export default function EmergencyPage() {
               className="absolute w-48 h-48 bg-red-500 rounded-full"
             />
           )}
-          <button
+          <GradientButton
+            variant="danger"
             onClick={handleSOS}
-            className="relative z-10 w-48 h-48 rounded-full bg-gradient-to-br from-red-500 to-red-700 shadow-[0_0_50px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center text-white border-4 border-red-400 hover:scale-105 active:scale-95 transition-all"
+            className="relative z-10 w-48 h-48 rounded-full bg-gradient-to-br from-red-500 to-red-700 shadow-[0_0_50px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center text-white border-4 border-red-400 active:scale-95"
           >
             <ShieldAlert size={64} className="mb-2" />
             <span className="text-3xl font-black tracking-widest">SOS</span>
-          </button>
+          </GradientButton>
           <p className="mt-8 text-sm text-red-300 text-center max-w-xs">
             Hold for 3 seconds to instantly alert campus security and your emergency contacts.
           </p>

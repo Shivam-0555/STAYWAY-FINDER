@@ -14,12 +14,12 @@ export function GradientButton({
   size = "md",
   ...props
 }: GradientButtonProps) {
-  const baseStyles = "relative font-semibold rounded-full overflow-hidden transition-all duration-300 flex items-center justify-center gap-2";
+  const baseStyles = "relative font-semibold rounded-full overflow-hidden transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer";
   
   const variants = {
-    primary: "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-[0_0_20px_rgba(124,58,237,0.5)]",
-    secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/20",
-    danger: "bg-gradient-to-r from-red-600 to-pink-600 text-white hover:shadow-[0_0_20px_rgba(225,29,72,0.5)]",
+    primary: "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-[0_0_20px_rgba(124,58,237,0.5)]",
+    secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/20 shadow-sm hover:shadow-lg",
+    danger: "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg hover:shadow-[0_0_20px_rgba(225,29,72,0.5)]",
   };
 
   const sizes = {

@@ -1,0 +1,10 @@
+<svg width="1200" height="320" viewBox="0 0 1200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M128 16C79.4 16 40 55.4 40 104C40 168 128 328 128 328C128 328 216 168 216 104C216 55.4 176.6 16 128 16Z" fill="#4F46E5"/>
+  <circle cx="128" cy="104" r="42" fill="#FFFFFF"/>
+  <circle cx="128" cy="104" r="20" fill="#4F46E5"/>
+  <circle cx="128" cy="344" r="30" stroke="#4F46E5" stroke-width="24" fill="none"/>
+  <circle cx="128" cy="344" r="64" stroke="#4F46E5" stroke-width="20" fill="none"/>
+  <circle cx="128" cy="344" r="98" stroke="#4F46E5" stroke-width="16" fill="none"/>
+  <text x="260" y="120" fill="#4F46E5" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="700">StayWay Finder</text>
+  <text x="260" y="200" fill="#374151" font-family="Arial, Helvetica, sans-serif" font-size="36">Find Safe Routes, Hostels & Essential Services</text>
+</svg>

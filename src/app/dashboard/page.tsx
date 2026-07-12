@@ -11,6 +11,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { LocationSwiper } from "@/components/ui/LocationSwiper";
 import { StatisticCard } from "@/components/ui/StatisticCard";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Category, City, Place } from "@/data/mockPlaces";
 import { categoryMetadata, cityMetadata, categoryFallbackImage } from "@/data/uiMetadata";
 
@@ -57,9 +58,11 @@ const categoryColors: Record<string, string> = {
 
 export default function Dashboard() {
   return (
-    <Suspense fallback={<div className="h-screen w-full flex items-center justify-center bg-[#05050f] text-white">Loading Dashboard...</div>}>
-      <DashboardContent />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense fallback={<div className="h-screen w-full flex items-center justify-center bg-[#05050f] text-white">Loading Dashboard...</div>}>
+        <DashboardContent />
+      </Suspense>
+    </ProtectedRoute>
   );
 }
 
@@ -86,6 +89,7 @@ function DashboardContent() {
   const [flyTo, setFlyTo] = useState<{ coords: [number, number]; key: number } | null>(null);
   const flyToKeyRef = useRef(0);
   const [locating, setLocating] = useState(false);
+  const [nearbyOnly, setNearbyOnly] = useState(true);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -224,6 +228,33 @@ function DashboardContent() {
       .slice(0, 5);
   }, [searchQuery, places]);
 
+  const placesWithDistance = useMemo(() => {
+    const toRad = (value: number) => (value * Math.PI) / 180;
+    return places.map((place) => {
+      if (!userLocation) {
+        return { ...place, distanceKm: 0, distanceText: "" };
+      }
+
+      const [lat1, lon1] = userLocation;
+      const [lat2, lon2] = [place.lat, place.lng];
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+      const distanceKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distanceText = distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m` : `${distanceKm.toFixed(1)} km`;
+
+      return { ...place, distanceKm, distanceText };
+    });
+  }, [places, userLocation]);
+
+  const nearbyPlaces = useMemo(
+    () => (userLocation ? placesWithDistance.filter((p) => p.distanceKm <= 4) : placesWithDistance),
+    [placesWithDistance, userLocation]
+  );
+
+  const visiblePlaces = nearbyOnly ? nearbyPlaces : placesWithDistance;
+
   const cityStats = useMemo(() => {
     const hostel = places.filter((p) => p.category === "hostel").length;
     const food = places.filter((p) => p.category === "food").length;
@@ -232,16 +263,24 @@ function DashboardContent() {
     return { hostel, food, clinic, emergency, total: places.length };
   }, [places]);
 
+  const nearbyStats = useMemo(() => {
+    const hostel = nearbyPlaces.filter((p) => p.category === "hostel").length;
+    const food = nearbyPlaces.filter((p) => p.category === "food").length;
+    const clinic = nearbyPlaces.filter((p) => p.category === "clinic").length;
+    const emergency = nearbyPlaces.filter((p) => p.category === "emergency").length;
+    return { hostel, food, clinic, emergency, total: nearbyPlaces.length };
+  }, [nearbyPlaces]);
+
   const categorySummary = useMemo(() => {
     return categoryMetadata.map((meta) => ({
       ...meta,
-      count: places.filter((p) => p.category === meta.id).length,
+      count: visiblePlaces.filter((p) => p.category === meta.id).length,
     }));
-  }, [places]);
+  }, [visiblePlaces]);
 
   // Panel list filter
   const filteredForPanel = useMemo(() => {
-    let filtered = filter === "all" ? places : places.filter((p) => p.category === filter);
+    let filtered = filter === "all" ? visiblePlaces : visiblePlaces.filter((p) => p.category === filter);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -252,8 +291,8 @@ function DashboardContent() {
           (p.budget && `${p.budget}`.includes(q))
       );
     }
-    return filtered;
-  }, [filter, searchQuery, places]);
+    return filtered.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+  }, [filter, searchQuery, visiblePlaces]);
 
   const triggerFlyTo = (coords: [number, number]) => {
     flyToKeyRef.current += 1;
@@ -335,20 +374,20 @@ function DashboardContent() {
 
           <div className="mt-6 grid gap-2 sm:grid-cols-2">
             <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-4">
-              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Hostels</p>
-              <p className="mt-2 text-white font-semibold">{cityStats.hostel}</p>
+              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Hostels nearby</p>
+              <p className="mt-2 text-white font-semibold">{nearbyStats.hostel}</p>
             </div>
             <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-4">
-              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Food spots</p>
-              <p className="mt-2 text-white font-semibold">{cityStats.food}</p>
+              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Food spots nearby</p>
+              <p className="mt-2 text-white font-semibold">{nearbyStats.food}</p>
             </div>
             <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-4">
-              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Hospitals</p>
-              <p className="mt-2 text-white font-semibold">{cityStats.clinic}</p>
+              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Hospitals nearby</p>
+              <p className="mt-2 text-white font-semibold">{nearbyStats.clinic}</p>
             </div>
             <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-4">
-              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Emergency</p>
-              <p className="mt-2 text-white font-semibold">{cityStats.emergency}</p>
+              <p className="text-xs uppercase tracking-[.24em] text-slate-400">Emergency nearby</p>
+              <p className="mt-2 text-white font-semibold">{nearbyStats.emergency}</p>
             </div>
           </div>
         </GlassCard>
@@ -417,6 +456,16 @@ function DashboardContent() {
                 })}
               </div>
             </div>
+          </div>
+
+          <div className="flex flex-col gap-3 mt-4">
+            <button
+              onClick={() => setNearbyOnly(!nearbyOnly)}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/80 px-4 py-3 text-sm font-semibold text-slate-100 hover:bg-slate-800 transition-all"
+            >
+              {nearbyOnly ? "Showing nearby only" : "Showing all city places"}
+            </button>
+            <p className="text-xs text-slate-400">Nearby = within 4 km of your location</p>
           </div>
 
           <div className="relative mt-5" ref={searchRef}>
@@ -632,7 +681,7 @@ function DashboardContent() {
       {/* Map Area */}
       <div className="flex-1 relative w-full min-h-[55vh] md:min-h-screen z-0">
         <SmartMap
-          places={places}
+          places={visiblePlaces}
           filter={filter}
           onMarkerClick={(place) => { setSelectedPlace(place); triggerFlyTo([place.lat, place.lng]); }}
           flyTo={flyTo}
