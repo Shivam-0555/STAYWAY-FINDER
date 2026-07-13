@@ -1,0 +1,74 @@
+[
+  {
+    "id": "hostel",
+    "name": "Verified Hostel",
+    "lat": 22.3157,
+    "lng": 73.1912,
+    "type": "hostel",
+    "emoji": "🏠",
+    "distance": "0.8 km",
+    "rating": 4.8,
+    "status": "Open Now",
+    "color": "#2563eb"
+  },
+  {
+    "id": "food",
+    "name": "Safe Food Spot",
+    "lat": 22.3148,
+    "lng": 73.1895,
+    "type": "food",
+    "emoji": "🍔",
+    "distance": "0.6 km",
+    "rating": 4.6,
+    "status": "Open Now",
+    "color": "#f59e0b"
+  },
+  {
+    "id": "hospital",
+    "name": "City Hospital",
+    "lat": 22.3115,
+    "lng": 73.1855,
+    "type": "hospital",
+    "emoji": "🏥",
+    "distance": "1.2 km",
+    "rating": 4.9,
+    "status": "Open Now",
+    "color": "#ef4444"
+  },
+  {
+    "id": "emergency",
+    "name": "Emergency Point",
+    "lat": 22.3138,
+    "lng": 73.1878,
+    "type": "emergency",
+    "emoji": "🚨",
+    "distance": "0.4 km",
+    "rating": 4.7,
+    "status": "24/7",
+    "color": "#dc2626"
+  },
+  {
+    "id": "transit",
+    "name": "Transit Hub",
+    "lat": 22.3168,
+    "lng": 73.1908,
+    "type": "transit",
+    "emoji": "🚌",
+    "distance": "0.3 km",
+    "rating": 4.5,
+    "status": "Open Now",
+    "color": "#16a34a"
+  },
+  {
+    "id": "atm",
+    "name": "ATM Booth",
+    "lat": 22.3134,
+    "lng": 73.1915,
+    "type": "atm",
+    "emoji": "🏧",
+    "distance": "0.5 km",
+    "rating": 4.3,
+    "status": "Open Now",
+    "color": "#7c3aed"
+  }
+]
