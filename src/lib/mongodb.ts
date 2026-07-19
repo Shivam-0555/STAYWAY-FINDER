@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI || "";
 
-// Define a global variable to cache the connection in development
-// so we don't create multiple connections on hot reload.
 let cached = (global as any).mongoose;
 
 if (!cached) {
