@@ -127,16 +127,16 @@ export default function HeroMap() {
       >
         <MapController center={center} zoom={14} />
         <LayersControl position="topright">
-          <LayersControl.BaseLayer checked={viewMode === "light"} name="Map">
+          <LayersControl.BaseLayer checked={viewMode === "light"} name="OpenStreetMap">
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer checked={viewMode === "satellite"} name="Satellite">
+          <LayersControl.BaseLayer checked={viewMode === "satellite"} name="Humanitarian">
             <TileLayer
-              attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a>'
-              url="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2Vhbm1vY2F1bCIsImEiOiJjbHFvc2N2Y3V2MnJ0MmpueW1zNGd5ZHo0In0.7o8j8Rj7kHjB3D5gM6D_A"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
             />
           </LayersControl.BaseLayer>
         </LayersControl>
