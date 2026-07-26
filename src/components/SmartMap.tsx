@@ -5,7 +5,24 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "rea
 import "leaflet/dist/leaflet.css";
 import { Search } from "lucide-react";
 import L from "leaflet";
-import { Place, Category, DEMO_CENTER } from "@/data/mockPlaces";
+
+type Category = "hostel" | "food" | "bus" | "atm" | "clinic" | "emergency" | "safe-route" | "other";
+type Place = {
+  id?: string;
+  _id?: string;
+  name: string;
+  category: Category;
+  city: string;
+  lat: number;
+  lng: number;
+  budget?: number;
+  rating?: number;
+  address: string;
+  description?: string;
+  reviews?: Array<{ user: string; comment: string; rating: number }>;
+};
+
+const DEMO_CENTER: [number, number] = [22.3072, 73.1812];
 
 const getIcon = (category: Category) => {
   const colorMap: Record<Category, string> = {
@@ -133,12 +150,14 @@ export default function SmartMap({ places, filter = "all", onMarkerClick, flyTo 
           </Marker>
         )}
 
-        {filteredPlaces.map((place) => (
+        {filteredPlaces.map((place) => {
+          const placeKey = place._id || place.id || `${place.lat}-${place.lng}`;
+          return (
           <Marker
-            key={place.id}
+            key={placeKey}
             position={[place.lat, place.lng]}
             icon={getIcon(place.category)}
-            eventHandlers={{ click: () => onMarkerClick && onMarkerClick(place) }}
+            eventHandlers={{ click: () => onMarkerClick && onMarkerClick({ ...place, id: placeKey }) }}
           >
             <Popup>
               <div style={{ fontFamily: "sans-serif", minWidth: "160px" }}>
@@ -150,7 +169,8 @@ export default function SmartMap({ places, filter = "all", onMarkerClick, flyTo 
               </div>
             </Popup>
           </Marker>
-        ))}
+          );
+        })}
       </MapContainer>
     </div>
   );

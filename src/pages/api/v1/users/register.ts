@@ -30,10 +30,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     res.status(201).json({ success: true, data: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, errors: error.errors });
+      return res.status(400).json({ success: false, errors: error.issues });
     }
-    res.status(500).json({ success: false, message: error.message });
+
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ success: false, message });
   }
 }

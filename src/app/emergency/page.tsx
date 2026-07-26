@@ -6,15 +6,49 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { motion } from "framer-motion";
 
+type EmergencyContact = {
+  _id: string;
+  name: string;
+  phone: string;
+  type: "hospital" | "police" | "fire";
+  location?: {
+    address?: string;
+    coordinates?: { lat: number; lng: number };
+  };
+};
+
 export default function EmergencyPage() {
   const [sosActive, setSosActive] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
   const [locationName, setLocationName] = useState("Detecting location...");
+  const [contacts, setContacts] = useState<EmergencyContact[]>([]);
+  const [loadingContacts, setLoadingContacts] = useState(true);
 
-  // Auto-detect location on mount
   useEffect(() => {
     detectLocation();
+  }, []);
+
+  useEffect(() => {
+    async function loadContacts() {
+      try {
+        const response = await fetch("/api/v1/emergency-contacts");
+        if (!response.ok) {
+          setContacts([]);
+          return;
+        }
+
+        const payload = await response.json();
+        const items = Array.isArray(payload?.data) ? payload.data : [];
+        setContacts(items);
+      } catch {
+        setContacts([]);
+      } finally {
+        setLoadingContacts(false);
+      }
+    }
+
+    loadContacts();
   }, []);
 
   const detectLocation = () => {
@@ -139,72 +173,32 @@ export default function EmergencyPage() {
             <Phone className="text-blue-400" /> Quick Dial
           </h2>
           <div className="space-y-4 flex-1">
+            {loadingContacts && <p className="text-sm text-gray-400">Loading emergency contacts from MongoDB...</p>}
 
-            {/* Police — with "Find Nearest" */}
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="font-semibold">Police Station (Sector 4)</p>
-                  <p className="text-sm text-gray-400">100</p>
-                </div>
-                <a href="tel:100" className="inline-block">
-                  <GradientButton size="sm" variant="secondary"><Phone size={16} /></GradientButton>
-                </a>
-              </div>
-              <button
-                onClick={() => openNearestInMaps("police station near me")}
-                className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1"
-              >
-                <MapPin size={12} /> Find nearest police station
-                <ExternalLink size={10} />
-              </button>
-            </div>
+            {!loadingContacts && contacts.length === 0 && (
+              <p className="text-sm text-gray-400">No emergency contacts were returned from the MongoDB collection.</p>
+            )}
 
-            {/* Campus Security — with "Find Nearest" */}
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="font-semibold">Campus Security</p>
-                  <p className="text-sm text-gray-400">+91 98765 43210</p>
+            {contacts.map((contact) => (
+              <div key={contact._id} className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <p className="font-semibold">{contact.name}</p>
+                    <p className="text-sm text-gray-400">{contact.phone}</p>
+                  </div>
+                  <a href={`tel:${contact.phone}`} className="inline-block">
+                    <GradientButton size="sm" variant="secondary"><Phone size={16} /></GradientButton>
+                  </a>
                 </div>
-                <a href="tel:+919876543210" className="inline-block">
-                  <GradientButton size="sm" variant="secondary"><Phone size={16} /></GradientButton>
-                </a>
-              </div>
-              <button
-                onClick={() => openNearestInMaps("campus security office near me")}
-                className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1"
-              >
-                <MapPin size={12} /> Find nearest security office
-                <ExternalLink size={10} />
-              </button>
-            </div>
-
-            {/* Ambulance */}
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="font-semibold">City Hospital Ambulance</p>
-                  <p className="text-sm text-gray-400">102 / 108</p>
-                </div>
-                <a href="tel:102" className="inline-block">
-                  <GradientButton size="sm" variant="secondary"><Phone size={16} /></GradientButton>
-                </a>
-              </div>
-              <div className="flex gap-3 mt-1">
                 <button
-                  onClick={() => openNearestInMaps("hospital near me")}
-                  className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                  onClick={() => openNearestInMaps(`${contact.name} near me`)}
+                  className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1"
                 >
-                  <MapPin size={12} /> Nearest hospital
+                  <MapPin size={12} /> Find nearest {contact.type}
                   <ExternalLink size={10} />
                 </button>
-                <a href="tel:108" className="text-xs text-red-400 hover:text-red-300 transition-colors">
-                  📞 Dial 108
-                </a>
               </div>
-            </div>
-
+            ))}
           </div>
         </GlassCard>
       </div>

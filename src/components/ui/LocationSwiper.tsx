@@ -1,9 +1,23 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, MapPin, ChevronRight, Navigation } from "lucide-react";
-import { Place } from "@/data/mockPlaces";
+import { motion } from "framer-motion";
+import { Star, MapPin, ChevronRight } from "lucide-react";
 import { GlassCard } from "./GlassCard";
+
+type Category = "hostel" | "food" | "bus" | "atm" | "clinic" | "emergency" | "safe-route" | "other";
+type Place = {
+  id: string;
+  name: string;
+  category: Category;
+  city: string;
+  lat: number;
+  lng: number;
+  budget?: number;
+  rating?: number;
+  address: string;
+  description?: string;
+  reviews?: Array<{ user: string; comment: string; rating: number }>;
+};
 
 interface LocationSwiperProps {
   places: Place[];

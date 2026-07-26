@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, ZoomControl, LayersControl, Polyline, CircleMarker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import markerData from "@/data/mapMarkers.json";
 
 type MarkerItem = {
   id: string;
@@ -17,6 +16,19 @@ type MarkerItem = {
   rating: number;
   status: string;
   color: string;
+};
+
+type ApiPlace = {
+  id: string;
+  name: string;
+  category: "hostel" | "food" | "bus" | "atm" | "clinic" | "emergency" | "safe-route" | "other";
+  city: string;
+  lat: number;
+  lng: number;
+  budget?: number;
+  rating?: number;
+  address: string;
+  description?: string;
 };
 
 type ViewMode = "light" | "satellite";
@@ -53,9 +65,38 @@ export default function HeroMap() {
   const [activeMarker, setActiveMarker] = useState<MarkerItem | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("light");
+  const [markers, setMarkers] = useState<MarkerItem[]>([]);
   const mapRef = useRef<L.Map | null>(null);
 
-  const markers = markerData as MarkerItem[];
+  useEffect(() => {
+    async function loadMarkers() {
+      try {
+        const response = await fetch("/api/places");
+        if (!response.ok) {
+          setMarkers([]);
+          return;
+        }
+        const data: ApiPlace[] = await response.json();
+        const nextMarkers: MarkerItem[] = data.map((place) => ({
+          id: place.id,
+          name: place.name,
+          lat: place.lat,
+          lng: place.lng,
+          type: place.category === "hostel" ? "hostel" : place.category === "food" ? "food" : place.category === "clinic" ? "hospital" : place.category === "emergency" ? "emergency" : "transport",
+          emoji: place.category === "hostel" ? "🏠" : place.category === "food" ? "🍽️" : place.category === "clinic" ? "🏥" : place.category === "emergency" ? "🚨" : "🚌",
+          distance: "Nearby",
+          rating: place.rating ?? 4.5,
+          status: "Live",
+          color: place.category === "hostel" ? "#8b5cf6" : place.category === "food" ? "#f59e0b" : place.category === "clinic" ? "#ef4444" : place.category === "emergency" ? "#ef4444" : "#3b82f6",
+        }));
+        setMarkers(nextMarkers);
+      } catch {
+        setMarkers([]);
+      }
+    }
+
+    loadMarkers();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof navigator === "undefined") {

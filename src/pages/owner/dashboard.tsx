@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 export default function OwnerDashboard() {
   const { data: session } = useSession();
   const { data: hostels, error, isLoading } = useSWR('/api/v1/hostels', fetcher);
-  const ownerHostels = hostels?.filter((h: any) => h.owner === session?.user?.id) || [];
+  const ownerHostels = hostels?.filter((h: { owner?: string | null }) => h.owner === session?.user?.id) || [];
 
   return (
     <ProtectedRoute allowedRoles={['owner']}>

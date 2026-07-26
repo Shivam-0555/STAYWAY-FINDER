@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { ShieldCheck, AlertTriangle, Home, Compass, Menu, X, Sparkles, LogOut, User } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Home, Compass, Menu, X, Sparkles, LogOut, User, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/authContext";
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Compass },
   { href: "/route", label: "Safe Route", icon: ShieldCheck },
   { href: "/emergency", label: "Emergency", icon: AlertTriangle },
+  { href: "/find", label: "Find", icon: Search },
 ];
 
 const quickLinks = [

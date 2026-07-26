@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { connectToDatabase } from '@/lib/mongodb';
 import Hostel from '@/models/Hostel';
@@ -18,13 +19,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const session = await getServerSession(req, res, authOptions);
+      const session = (await getServerSession(req, res, authOptions)) as Session | null;
 
       if (!session || session.user?.role !== 'owner') {
         return res.status(403).json({ success: false, message: 'Forbidden: Only owners can create hostels' });
       }
 
-      // Basic validation should be added here
       const newHostel = await Hostel.create({
         ...req.body,
         owner: session.user.id,
@@ -32,8 +32,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       return res.status(201).json({ success: true, data: newHostel });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, message: error.message });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return res.status(400).json({ success: false, message });
     }
   }
 

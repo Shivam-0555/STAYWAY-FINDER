@@ -12,10 +12,45 @@ import { GradientButton } from "@/components/ui/GradientButton";
 import { LocationSwiper } from "@/components/ui/LocationSwiper";
 import { StatisticCard } from "@/components/ui/StatisticCard";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { Category, City, Place } from "@/data/mockPlaces";
-import { categoryMetadata, cityMetadata, categoryFallbackImage } from "@/data/uiMetadata";
 
 const SmartMap = dynamic(() => import("@/components/SmartMap"), { ssr: false });
+
+type Category = "hostel" | "food" | "bus" | "atm" | "clinic" | "emergency" | "safe-route" | "other";
+type City = "Hyderabad" | "Mumbai" | "Bengaluru" | "Ahmedabad" | "Patna" | "Vadodara";
+type Place = {
+  id: string;
+  name: string;
+  category: Category;
+  city: string;
+  lat: number;
+  lng: number;
+  budget?: number;
+  rating?: number;
+  address: string;
+  description?: string;
+  reviews?: Array<{ user: string; comment: string; rating: number }>;
+};
+
+const fallbackCityMetadata = [
+  { id: "all", label: "All Cities", heroImage: "/images/cities/placeholder-city.svg", description: "Browse safe student stays and essential city services across all campuses.", highlight: "Pick a city to see curated hostels, dining, transport and emergency services." },
+  { id: "Hyderabad", label: "Hyderabad", heroImage: "/images/cities/hyderabad.svg", description: "Find student-friendly PGs, food messes, clinics and safe routes in Hyderabad.", highlight: "From Charminar charm to tech corridor convenience, stay safe and connected." },
+  { id: "Mumbai", label: "Mumbai", heroImage: "/images/cities/mumbai.svg", description: "Navigate Mumbai with curated hostel stays, food stops, transit options and emergency services.", highlight: "Stay near the Gateway and city hotspots without sacrificing safety." },
+  { id: "Bengaluru", label: "Bengaluru", heroImage: "/images/cities/bengaluru.svg", description: "Student living in Bengaluru made easy with nearby PGs, dining and healthcare.", highlight: "Experience the green tech city with secure stays and easy mobility." },
+  { id: "Ahmedabad", label: "Ahmedabad", heroImage: "/images/cities/ahmedabad.svg", description: "Discover Ahmedabad landmarks, student stays, mess kitchens and medical help.", highlight: "Safe routes and reliable services across Gujarat's fast-growing student hubs." },
+  { id: "Vadodara", label: "Vadodara", heroImage: "/images/cities/vadodara.svg", description: "Explore Vadodara's campus neighborhoods, heritage landmarks, and trusted student services.", highlight: "Vadodara safety maps with hostels, food, hospitals, and emergency support." },
+  { id: "Patna", label: "Patna", heroImage: "/images/cities/patna.svg", description: "Find comfortable PGs and essential services in Patna's college neighborhoods.", highlight: "Keep your campus life connected with trusted food, transport and clinic options." },
+] as const;
+
+const fallbackCategoryMetadata = [
+  { id: "hostel", label: "Hostel", image: "/images/categories/hostel.svg" },
+  { id: "food", label: "Food", image: "/images/categories/food.svg" },
+  { id: "atm", label: "ATM", image: "/images/categories/atm.svg" },
+  { id: "bus", label: "Bus Stop", image: "/images/categories/bus.svg" },
+  { id: "clinic", label: "Hospital", image: "/images/categories/clinic.svg" },
+  { id: "emergency", label: "Emergency", image: "/images/categories/emergency.svg" },
+] as const;
+
+const categoryFallbackImage = "/images/categories/placeholder.svg";
 
 const categories = [
   { id: "all",    label: "All",        icon: MapPin },
@@ -71,6 +106,8 @@ function DashboardContent() {
   const [city, setCity] = useState<City | "all">("Vadodara");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [cityMetadata, setCityMetadata] = useState(fallbackCityMetadata);
+  const [categoryMetadata, setCategoryMetadata] = useState(fallbackCategoryMetadata);
   const selectedCityMeta = cityMetadata.find((item) => item.id === city) ?? cityMetadata[0];
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [places, setPlaces] = useState<Place[]>([]);
@@ -92,6 +129,7 @@ function DashboardContent() {
   const [nearbyOnly, setNearbyOnly] = useState(true);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
+  const query = searchParams?.get("search") ?? null;
 
   const updateLocationFromCoords = async (coords: [number, number], isFallback = false) => {
     setUserLocation(coords);
@@ -160,6 +198,26 @@ function DashboardContent() {
     );
   }, []);
 
+  useEffect(() => {
+    async function fetchMetadata() {
+      try {
+        const res = await fetch("/api/metadata");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data?.cities) && data.cities.length > 0) {
+          setCityMetadata(data.cities);
+        }
+        if (Array.isArray(data?.categories) && data.categories.length > 0) {
+          setCategoryMetadata(data.categories);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard metadata:", error);
+      }
+    }
+
+    fetchMetadata();
+  }, []);
+
   // Fetch places from backend API
   useEffect(() => {
     async function fetchPlaces() {
@@ -186,7 +244,6 @@ function DashboardContent() {
   // Load search from URL if present
   useEffect(() => {
     if (isLoadingPlaces) return;
-    const query = searchParams.get("search");
     if (query) {
       setSearchQuery(query);
       const matchedPlace = places.find(p => p.name.toLowerCase().includes(query.toLowerCase()));
@@ -195,7 +252,7 @@ function DashboardContent() {
         triggerFlyTo([matchedPlace.lat, matchedPlace.lng]);
       }
     }
-  }, [searchParams, isLoadingPlaces, places]);
+  }, [query, isLoadingPlaces, places]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -683,7 +740,7 @@ function DashboardContent() {
         <SmartMap
           places={visiblePlaces}
           filter={filter}
-          onMarkerClick={(place) => { setSelectedPlace(place); triggerFlyTo([place.lat, place.lng]); }}
+          onMarkerClick={(place) => { setSelectedPlace(place as any); triggerFlyTo([place.lat, place.lng]); }}
           flyTo={flyTo}
           userLocation={userLocation}
         />

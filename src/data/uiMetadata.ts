@@ -1,4 +1,21 @@
-import { Category, City } from "@/data/mockPlaces";
+
+export type Category =
+  | "hostel"
+  | "food"
+  | "bus"
+  | "atm"
+  | "clinic"
+  | "safe-route"
+  | "emergency"
+  | "other";
+
+export type City =
+  | "Hyderabad"
+  | "Mumbai"
+  | "Bengaluru"
+  | "Ahmedabad"
+  | "Patna"
+  | "Vadodara";
 
 export type CityMeta = {
   id: City | "all";
@@ -33,7 +50,8 @@ export const cityMetadata: CityMeta[] = [
     id: "Mumbai",
     label: "Mumbai",
     heroImage: "/images/cities/mumbai.svg",
-    description: "Navigate Mumbai with curated hostel stays, food stops, transit options and emergency services.",
+    description:
+      "Navigate Mumbai with curated hostel stays, food stops, transit options and emergency services.",
     highlight: "Stay near the Gateway and city hotspots without sacrificing safety.",
   },
   {
@@ -54,7 +72,8 @@ export const cityMetadata: CityMeta[] = [
     id: "Vadodara",
     label: "Vadodara",
     heroImage: "/images/cities/vadodara.svg",
-    description: "Explore Vadodara's campus neighborhoods, heritage landmarks, and trusted student services.",
+    description:
+      "Explore Vadodara's campus neighborhoods, heritage landmarks, and trusted student services.",
     highlight: "Vadodara safety maps with hostels, food, hospitals, and emergency support.",
   },
   {
@@ -62,7 +81,8 @@ export const cityMetadata: CityMeta[] = [
     label: "Patna",
     heroImage: "/images/cities/patna.svg",
     description: "Find comfortable PGs and essential services in Patna's college neighborhoods.",
-    highlight: "Keep your campus life connected with trusted food, transport and clinic options.",
+    highlight:
+      "Keep your campus life connected with trusted food, transport and clinic options.",
   },
 ];
 

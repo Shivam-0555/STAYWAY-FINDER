@@ -21,18 +21,19 @@ export default function ProtectedRoute({
   const router = useRouter();
 
   const loading = status === 'loading';
+  const sessionUser = session?.user as { role?: string } | undefined;
 
   useEffect(() => {
     if (!loading) {
       if (!session) {
         // Not logged in → redirect to sign‑in
         router.replace('/auth/signin');
-      } else if (!allowedRoles.includes(session.user.role as any)) {
+      } else if (!allowedRoles.includes((sessionUser?.role as 'student' | 'owner' | 'admin') ?? 'student')) {
         // Logged in but role not permitted → redirect to home or 403 page
         router.replace('/');
       }
     }
-  }, [loading, session, router, allowedRoles]);
+  }, [loading, session, sessionUser?.role, router, allowedRoles]);
 
   // While checking session we show nothing (or a skeleton if desired)
   if (loading || !session) {
