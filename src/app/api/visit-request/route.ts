@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       time,
       message,
       passId,
-      ownerId: place.owner || null,
+      ownerId: place.owner || undefined,
     });
 
     return NextResponse.json({ success: true, request: newRequest });
