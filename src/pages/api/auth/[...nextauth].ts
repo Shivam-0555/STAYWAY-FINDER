@@ -33,11 +33,11 @@ export const authOptions: any = {
     }),
   ],
   pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
-    error: '/auth/error',
-    verifyRequest: '/auth/verify-request',
-    newUser: null,
+    signIn: '/login',
+    signOut: '/login',
+    error: '/login',
+    verifyRequest: '/login',
+    newUser: '/signup',
   },
   session: {
     strategy: 'jwt',

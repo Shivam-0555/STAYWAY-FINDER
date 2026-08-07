@@ -89,26 +89,30 @@ export async function GET(request: Request) {
       Place.countDocuments(filter),
     ]);
 
-    let places = rawPlaces.map((p: any) => ({
-      ...p,
-      _id: p._id.toString(),
-      name: p.name,
-      category: p.category,
-      city: p.city,
-      lat: p.lat,
-      lng: p.lng,
-      address: p.address,
-      description: p.description,
-      rating: p.rating,
-      budget: p.budget,
-      verified: p.verified ?? false,
-      website: p.website,
-      phone: p.phone,
-      imageUrl: p.imageUrl,
-      owner: p.owner,
-      type: p.type,
-      distanceKm: haversineKm(PARUL_LAT, PARUL_LNG, p.lat, p.lng),
-    }));
+    let places = rawPlaces.map((p: any) => {
+      const { _id, ...rest } = p;
+      return {
+        ...rest,
+        _id: _id.toString(),
+        id: _id.toString(),
+        name: p.name,
+        category: p.category,
+        city: p.city,
+        lat: p.lat,
+        lng: p.lng,
+        address: p.address,
+        description: p.description,
+        rating: p.rating,
+        budget: p.budget,
+        verified: p.verified ?? false,
+        website: p.website,
+        phone: p.phone,
+        imageUrl: p.imageUrl,
+        owner: p.owner,
+        type: p.type,
+        distanceKm: haversineKm(PARUL_LAT, PARUL_LNG, p.lat, p.lng),
+      };
+    });
 
     if (sortBy === "nearest") {
       places.sort((a, b) => a.distanceKm - b.distanceKm);

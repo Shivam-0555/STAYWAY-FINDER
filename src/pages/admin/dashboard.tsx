@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
+import MessagesSection from '@/components/admin/MessagesSection';
 
 export default function AdminDashboard() {
   // Fetch all hostels (including pending)
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
         
         <div className="grid grid-cols-1 gap-6">
+          <MessagesSection />
+
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 text-white">Manage Hostels</h2>
             <p className="text-gray-400 mb-4">Review pending listings and manage approved properties.</p>
@@ -36,7 +39,13 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {hostels.map((hostel: any) => (
+                    {hostels.map((hostel: {
+                      _id: string;
+                      name: string;
+                      owner: string;
+                      city?: { name?: string };
+                      status?: string;
+                    }) => (
                       <tr key={hostel._id} className="border-b border-gray-600">
                         <td className="py-3 px-4">{hostel.name}</td>
                         <td className="py-3 px-4 text-sm font-mono text-gray-400">{hostel.owner}</td>

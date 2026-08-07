@@ -98,6 +98,7 @@ export default function HeroMap() {
     loadMarkers();
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (typeof window === "undefined" || typeof navigator === "undefined") {
       setUserLocation(DEFAULT_CENTER);

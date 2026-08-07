@@ -23,6 +23,18 @@ export interface IPlace extends Document {
   owner?: string;
   type?: string;
   reviews?: IReview[];
+  // New Owner Portal Fields
+  availableRooms?: number;
+  totalRooms?: number;
+  rent?: number;
+  wifi?: boolean;
+  laundry?: boolean;
+  parking?: boolean;
+  mess?: boolean;
+  ac?: boolean;
+  images?: string[];
+  hostelType?: "boys" | "girls" | "coed";
+  lastUpdated?: Date;
 }
 
 const ReviewSchema = new Schema<IReview>({
@@ -53,6 +65,18 @@ const PlaceSchema = new Schema<IPlace>(
     owner: { type: String },
     type: { type: String },
     reviews: [ReviewSchema],
+    // New fields
+    availableRooms: { type: Number },
+    totalRooms: { type: Number },
+    rent: { type: Number },
+    wifi: { type: Boolean },
+    laundry: { type: Boolean },
+    parking: { type: Boolean },
+    mess: { type: Boolean },
+    ac: { type: Boolean },
+    images: [{ type: String }],
+    hostelType: { type: String, enum: ["boys", "girls", "coed"] },
+    lastUpdated: { type: Date, default: Date.now },
   },
   // strict:false allows category-specific extra fields (amenities, medicalServices,
   // popularDishes, cashWithdrawal, stationType, etc.) to be stored without

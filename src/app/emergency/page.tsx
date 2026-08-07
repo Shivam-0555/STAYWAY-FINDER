@@ -25,32 +25,6 @@ export default function EmergencyPage() {
   const [contacts, setContacts] = useState<EmergencyContact[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
 
-  useEffect(() => {
-    detectLocation();
-  }, []);
-
-  useEffect(() => {
-    async function loadContacts() {
-      try {
-        const response = await fetch("/api/v1/emergency-contacts");
-        if (!response.ok) {
-          setContacts([]);
-          return;
-        }
-
-        const payload = await response.json();
-        const items = Array.isArray(payload?.data) ? payload.data : [];
-        setContacts(items);
-      } catch {
-        setContacts([]);
-      } finally {
-        setLoadingContacts(false);
-      }
-    }
-
-    loadContacts();
-  }, []);
-
   const detectLocation = () => {
     if (!navigator.geolocation) {
       setLocationName("Location unavailable");
@@ -88,6 +62,33 @@ export default function EmergencyPage() {
       { timeout: 8000 }
     );
   };
+
+  useEffect(() => {
+    detectLocation();
+  }, []);
+
+  useEffect(() => {
+    async function loadContacts() {
+      try {
+        const response = await fetch("/api/v1/emergency-contacts");
+        if (!response.ok) {
+          setContacts([]);
+          return;
+        }
+
+        const payload = await response.json();
+        const items = Array.isArray(payload?.data) ? payload.data : [];
+        setContacts(items);
+      } catch {
+        setContacts([]);
+      } finally {
+        setLoadingContacts(false);
+      }
+    }
+
+    loadContacts();
+  }, []);
+
 
   const handleSOS = () => {
     setSosActive(true);

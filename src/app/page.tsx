@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useState } from "react";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { FeatureCard } from "@/components/ui/FeatureCard";
 import { StatisticCard } from "@/components/ui/StatisticCard";
@@ -38,6 +39,71 @@ const aboutPoints = [
 ];
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+    category: "contact",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const isValidPhone = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return true;
+    }
+
+    if (/[A-Za-z]/.test(trimmed)) {
+      return false;
+    }
+
+    const digitsOnly = trimmed.replace(/\D/g, '');
+    if (digitsOnly.length < 6) {
+      return false;
+    }
+
+    return /^[+]?[-()\s\d]+$/.test(trimmed);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    if (!isValidPhone(formData.phone)) {
+      setSubmitMessage("Please enter a valid phone number or leave the field empty.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json() as { message?: string };
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to send message.");
+      }
+
+      setSubmitMessage("Your message has been received. We will review it shortly.");
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "", category: "contact" });
+    } catch (error) {
+      setSubmitMessage(error instanceof Error ? error.message : "Unable to send message.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="relative overflow-hidden bg-white text-slate-900">
@@ -92,7 +158,7 @@ export default function Home() {
       </section>
 
       <section id="about" className="scroll-mt-24 bg-slate-50 px-4 py-20 md:px-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)] md:p-12">
+        <div className="mx-auto max-w-7xl rounded-4xl border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)] md:p-12">
           <div className="max-w-3xl">
             <p className="text-sm uppercase tracking-[.3em] text-sky-500">About StayWay Finder</p>
             <h2 className="mt-4 text-3xl font-semibold text-slate-950 md:text-4xl">
@@ -155,7 +221,7 @@ export default function Home() {
       </section>
 
       <section id="contact" className="scroll-mt-24 bg-white px-4 py-20 md:px-8">
-        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200 bg-slate-50 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.06)] md:p-12">
+        <div className="mx-auto max-w-7xl rounded-4xl border border-slate-200 bg-slate-50 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.06)] md:p-12">
           <div className="mb-10 max-w-2xl">
             <p className="text-sm uppercase tracking-[.3em] text-sky-500">Contact</p>
             <h2 className="mt-4 text-3xl font-semibold text-slate-950 md:text-4xl">Let’s build safer student journeys together.</h2>
@@ -183,7 +249,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Phone</p>
-                    <p className="font-semibold">+91 98765 43210</p>
+                    <p className="font-semibold">+91 98765 43217</p>
                   </div>
                 </div>
               </div>
@@ -201,29 +267,75 @@ export default function Home() {
               </div>
             </div>
 
-            <form className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm" onSubmit={(event) => event.preventDefault()}>
+            <form className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" onSubmit={handleSubmit}>
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="text-sm font-medium text-slate-700">
                   <span className="mb-2 block">Name</span>
-                  <input className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white" placeholder="Your name" />
+                  <input
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={(event) => handleChange("name", event.target.value)}
+                    required
+                  />
                 </label>
                 <label className="text-sm font-medium text-slate-700">
                   <span className="mb-2 block">Email</span>
-                  <input type="email" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white" placeholder="you@example.com" />
+                  <input
+                    type="email"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={(event) => handleChange("email", event.target.value)}
+                    required
+                  />
+                </label>
+              </div>
+
+              <div className="mt-5 grid gap-5 md:grid-cols-2">
+                <label className="text-sm font-medium text-slate-700">
+                  <span className="mb-2 block">Phone</span>
+                  <input
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white"
+                    placeholder="Optional"
+                    value={formData.phone}
+                    onChange={(event) => handleChange("phone", event.target.value)}
+                  />
+                </label>
+                <label className="text-sm font-medium text-slate-700">
+                  <span className="mb-2 block">Subject</span>
+                  <input
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white"
+                    placeholder="Support request"
+                    value={formData.subject}
+                    onChange={(event) => handleChange("subject", event.target.value)}
+                  />
                 </label>
               </div>
 
               <label className="mt-5 block text-sm font-medium text-slate-700">
                 <span className="mb-2 block">Message</span>
-                <textarea rows={5} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white" placeholder="Tell us how we can help." />
+                <textarea
+                  rows={5}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-400 focus:bg-white"
+                  placeholder="Tell us how we can help."
+                  value={formData.message}
+                  onChange={(event) => handleChange("message", event.target.value)}
+                  required
+                />
               </label>
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <GradientButton type="submit" size="md" className="w-full sm:w-auto">
-                  Send Message <ArrowRight size={16} />
+                <GradientButton type="submit" size="md" className="w-full sm:w-auto" disabled={isSubmitting}>
+                  {isSubmitting ? "Sending..." : "Send Message"} <ArrowRight size={16} />
                 </GradientButton>
-                <p className="text-sm text-slate-500">We usually reply within 24 hours.</p>
+                <p className="text-sm text-slate-500">We usually reply within 10 hours.</p>
               </div>
+              {submitMessage && (
+                <p className={`mt-4 text-sm ${submitMessage.includes("received") ? "text-emerald-600" : "text-rose-600"}`}>
+                  {submitMessage}
+                </p>
+              )}
             </form>
           </div>
         </div>
@@ -233,7 +345,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl rounded-4xl overflow-hidden border border-slate-200 bg-slate-50 shadow-2xl shadow-slate-900/10">
           <div className="px-6 py-8 sm:px-10 sm:py-10">
             <div className="mb-8 max-w-xl">
-              <p className="text-sm uppercase tracking-[.3em] text-sky-500">Live Safety Map</p>
+              <p className="text-sm uppercase tracking-[.3em] text-sky-500">📍Live Safety Map</p>
               <h2 className="mt-4 text-3xl font-semibold text-slate-950 md:text-4xl">Explore the map of safe student spots.</h2>
               <p className="mt-4 text-base text-slate-600">See hostels, food, ATM, clinic and emergency markers in one live preview.</p>
             </div>
@@ -252,7 +364,7 @@ export default function Home() {
                 key={stat.label}
                 label={stat.label}
                 value={stat.value}
-                accent={stat.accent as any}
+                accent={stat.accent as "blue" | "purple" | "amber" | "red" | "emerald"}
                 className={index === 0 ? "lg:col-span-2" : ""}
               />
             ))}

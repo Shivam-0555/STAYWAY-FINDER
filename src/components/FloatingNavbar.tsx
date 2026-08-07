@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Map, Navigation, Phone, Home, Search } from "lucide-react";
+import { Map, Navigation, Phone, Home, Search, CalendarCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function FloatingNavbar() {
@@ -15,10 +15,11 @@ export function FloatingNavbar() {
     { name: "Safe Route", href: "/route", icon: Navigation },
     { name: "Emergency", href: "/emergency", icon: Phone },
     { name: "Find", href: "/find", icon: Search },
+    { name: "My Visits", href: "/my-visits", icon: CalendarCheck },
   ];
 
   return (
-    <motion.div
+    <motion.div  
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2"

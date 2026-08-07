@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/ui/Navbar";
 import { AuthProvider } from "@/lib/authContext";
+import { FloatingChat } from "@/components/FloatingChat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
         <AuthProvider>
           <Navbar />
           {children}
+          <FloatingChat />
         </AuthProvider>
       </body>
     </html>

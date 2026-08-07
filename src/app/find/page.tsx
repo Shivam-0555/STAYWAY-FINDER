@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import SearchBar from "@/components/find/SearchBar";
 import CategoryFilters from "@/components/find/CategoryFilters";
 import ResultsGrid from "@/components/find/ResultsGrid";
@@ -79,11 +79,13 @@ export default function FindPage() {
   }, [query, category, city, minRating, verifiedOnly, sortBy]);
 
   // Reset to page 1 when filters change
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     setPage(1);
     setSelectedPlaceId(null);
   }, [query, category, city, minRating, verifiedOnly, sortBy]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     fetchPlaces(page);
   }, [fetchPlaces, page]);
@@ -91,9 +93,19 @@ export default function FindPage() {
   const handleViewOnMap = (id: string) => setSelectedPlaceId(id);
 
   const selectedPlace = places.find((p) => p._id === selectedPlaceId);
-  const flyTo = selectedPlace
-    ? { coords: [selectedPlace.lat, selectedPlace.lng] as [number, number], key: Date.now() }
-    : null;
+  const flyTo = useMemo(
+    () =>
+      selectedPlace
+        ? {
+            coords: [selectedPlace.lat, selectedPlace.lng] as [number, number],
+            key:
+              (typeof selectedPlace._id === 'string' && /^[0-9a-fA-F]+$/.test(selectedPlace._id)
+                ? parseInt(selectedPlace._id.slice(0, 8), 16)
+                : Date.now()),
+          }
+        : null,
+    [selectedPlace]
+  );
 
   const activeFiltersCount = [
     city !== "",
@@ -111,7 +123,7 @@ export default function FindPage() {
           Find Places
         </h1>
         <p className="relative text-slate-400 text-base max-w-lg mx-auto">
-          Search hostels, restaurants, hospitals, ATMs, transport & emergency services near Parul University — powered by live MongoDB data.
+          Search hostels, restaurants, hospitals, ATMs, transport & emergency services around you.
         </p>
       </div>
 

@@ -1,4 +1,7 @@
 "use client";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import toast from "react-hot-toast";
 import {
   Star,
   MapPin,
@@ -75,6 +78,43 @@ export default function ResultCard({ place, onViewMap, onSelectPlace, isSelected
     "from-slate-500/20 to-slate-600/10 border-slate-500/30 text-slate-300";
   const label = CATEGORY_LABELS[categoryKey] ?? place.category;
   const cardImage = getPlaceHeroImage(place);
+
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const [bookingForm, setBookingForm] = useState({
+    studentName: "",
+    phone: "",
+    email: "",
+    date: "",
+    time: "",
+    message: ""
+  });
+  const [isBooking, setIsBooking] = useState(false);
+
+  const handleBookVisit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsBooking(true);
+    try {
+      const res = await fetch("/api/visit-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...bookingForm, hostelId: place._id })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to book visit");
+      toast.success("Visit request submitted successfully.");
+      setShowBookingModal(false);
+      setBookingForm({ studentName: "", phone: "", email: "", date: "", time: "", message: "" });
+    } catch (err: any) {
+      toast.error(err.message || "Error submitting request");
+    } finally {
+      setIsBooking(false);
+    }
+  };
 
   const handleCardClick = (e: React.MouseEvent) => {
     // If clicking action buttons/links, don't open modal
@@ -174,43 +214,103 @@ export default function ResultCard({ place, onViewMap, onSelectPlace, isSelected
         )}
 
         {/* Action Buttons */}
-        <div className="mt-auto pt-3 border-t border-white/5 flex items-center gap-2 flex-wrap">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewMap(place._id);
-            }}
-            className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all shadow-lg shadow-blue-500/20"
-          >
-            <MapPin size={13} />
-            View on Map
-          </button>
+        <div className="mt-auto pt-3 border-t border-white/5 flex flex-col gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewMap(place._id);
+              }}
+              className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all shadow-lg shadow-blue-500/20"
+            >
+              <MapPin size={13} />
+              View on Map
+            </button>
 
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onSelectPlace) onSelectPlace(place);
-            }}
-            className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/10 transition-all"
-          >
-            Details
-          </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onSelectPlace) onSelectPlace(place);
+              }}
+              className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/10 transition-all"
+            >
+              Details
+            </button>
 
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            title="Get Directions"
-            className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 text-slate-200 p-2 rounded-xl border border-white/10 transition-all"
-          >
-            <Navigation size={13} />
-          </a>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              title="Get Directions"
+              className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 active:scale-95 text-slate-200 p-2 rounded-xl border border-white/10 transition-all"
+            >
+              <Navigation size={13} />
+            </a>
+          </div>
+          {(categoryKey === "hostel" || categoryKey === "pg") && (
+            <div className="flex justify-between items-center mt-2">
+              <a href={`/owner-dashboard?placeId=${place.id}`} onClick={(e) => e.stopPropagation()} className="text-[11px] text-purple-400 hover:text-purple-300 font-medium underline decoration-purple-400/30 hover:decoration-purple-400 transition-colors">
+                Claim This Listing
+              </a>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setShowBookingModal(true); }}
+                className="text-[11px] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-medium px-3 py-1 rounded-md hover:from-emerald-400 hover:to-emerald-500 transition-colors flex items-center gap-1 shadow-lg shadow-emerald-500/20"
+              >
+                📅 Book Visit
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-white mb-4">Book a Visit to {place.name}</h3>
+            <form onSubmit={handleBookVisit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Name *</label>
+                  <input required type="text" value={bookingForm.studentName} onChange={(e) => setBookingForm({...bookingForm, studentName: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Phone *</label>
+                  <input required type="tel" value={bookingForm.phone} onChange={(e) => setBookingForm({...bookingForm, phone: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Email *</label>
+                <input required type="email" value={bookingForm.email} onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Preferred Date *</label>
+                  <input required type="date" value={bookingForm.date} onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Preferred Time *</label>
+                  <input required type="time" value={bookingForm.time} onChange={(e) => setBookingForm({...bookingForm, time: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Message (Optional)</label>
+                <textarea rows={2} value={bookingForm.message} onChange={(e) => setBookingForm({...bookingForm, message: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none resize-none"></textarea>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowBookingModal(false)} className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-xl transition-colors">Cancel</button>
+                <button type="submit" disabled={isBooking} className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-xl transition-colors disabled:opacity-50">
+                  {isBooking ? "Submitting..." : "Submit Request"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
-

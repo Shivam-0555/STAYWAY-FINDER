@@ -19,19 +19,13 @@ export async function GET(request: Request) {
 
     const places = await Place.find(query).lean();
 
-    const formattedPlaces = places.map((p: any) => ({
-      id: p._id.toString(),
-      name: p.name,
-      category: p.category,
-      city: p.city,
-      lat: p.lat,
-      lng: p.lng,
-      budget: p.budget,
-      rating: p.rating,
-      address: p.address,
-      description: p.description,
-      verified: p.verified,
-    }));
+    const formattedPlaces = places.map((p: any) => {
+      const { _id, ...rest } = p;
+      return {
+        ...rest,
+        id: _id.toString(),
+      };
+    });
 
     return NextResponse.json(formattedPlaces);
   } catch (error) {

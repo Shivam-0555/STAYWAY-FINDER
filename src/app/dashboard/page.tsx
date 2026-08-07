@@ -131,6 +131,11 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const query = searchParams?.get("search") ?? null;
 
+  const triggerFlyTo = (coords: [number, number]) => {
+    flyToKeyRef.current += 1;
+    setFlyTo({ coords, key: flyToKeyRef.current });
+  };
+
   const updateLocationFromCoords = async (coords: [number, number], isFallback = false) => {
     setUserLocation(coords);
     triggerFlyTo(coords);
@@ -223,23 +228,23 @@ function DashboardContent() {
     async function fetchPlaces() {
       setIsLoadingPlaces(true);
       try {
-        let url = "/api/places";
-        if (city && city !== "all") {
-          url += `?city=${encodeURIComponent(city)}`;
-        }
+        // Use the search endpoint which returns all places; optionally include location for nearby calculations
+        const url = "/api/places/search";
         const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
-          setPlaces(data);
+          setPlaces(data.places || []);
+        } else {
+          console.error('Failed to fetch places:', res.status);
         }
       } catch (error) {
-        console.error("Error fetching places:", error);
+        console.error('Error fetching places:', error);
       } finally {
         setIsLoadingPlaces(false);
       }
     }
     fetchPlaces();
-  }, [city]);
+  }, []);
 
   // Load search from URL if present
   useEffect(() => {
@@ -285,9 +290,14 @@ function DashboardContent() {
       .slice(0, 5);
   }, [searchQuery, places]);
 
+  const cityFilteredPlaces = useMemo(() => {
+    if (city === "all") return places;
+    return places.filter((p) => p.city === city);
+  }, [city, places]);
+
   const placesWithDistance = useMemo(() => {
     const toRad = (value: number) => (value * Math.PI) / 180;
-    return places.map((place) => {
+    return cityFilteredPlaces.map((place) => {
       if (!userLocation) {
         return { ...place, distanceKm: 0, distanceText: "" };
       }
@@ -303,7 +313,7 @@ function DashboardContent() {
 
       return { ...place, distanceKm, distanceText };
     });
-  }, [places, userLocation]);
+  }, [cityFilteredPlaces, userLocation]);
 
   const nearbyPlaces = useMemo(
     () => (userLocation ? placesWithDistance.filter((p) => p.distanceKm <= 4) : placesWithDistance),
@@ -313,12 +323,12 @@ function DashboardContent() {
   const visiblePlaces = nearbyOnly ? nearbyPlaces : placesWithDistance;
 
   const cityStats = useMemo(() => {
-    const hostel = places.filter((p) => p.category === "hostel").length;
-    const food = places.filter((p) => p.category === "food").length;
-    const clinic = places.filter((p) => p.category === "clinic").length;
-    const emergency = places.filter((p) => p.category === "emergency").length;
-    return { hostel, food, clinic, emergency, total: places.length };
-  }, [places]);
+    const hostel = cityFilteredPlaces.filter((p) => p.category === "hostel").length;
+    const food = cityFilteredPlaces.filter((p) => p.category === "food").length;
+    const clinic = cityFilteredPlaces.filter((p) => p.category === "clinic").length;
+    const emergency = cityFilteredPlaces.filter((p) => p.category === "emergency").length;
+    return { hostel, food, clinic, emergency, total: cityFilteredPlaces.length };
+  }, [cityFilteredPlaces]);
 
   const nearbyStats = useMemo(() => {
     const hostel = nearbyPlaces.filter((p) => p.category === "hostel").length;
@@ -350,11 +360,6 @@ function DashboardContent() {
     }
     return filtered.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
   }, [filter, searchQuery, visiblePlaces]);
-
-  const triggerFlyTo = (coords: [number, number]) => {
-    flyToKeyRef.current += 1;
-    setFlyTo({ coords, key: flyToKeyRef.current });
-  };
 
   const getDistanceText = (place: Place, location: [number, number]) => {
     const toRad = (value: number) => (value * Math.PI) / 180;

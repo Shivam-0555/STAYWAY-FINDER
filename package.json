@@ -1,5 +1,5 @@
 {
-  "name": "campus-compass",
+  "name": "stayway-finder",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/genai": "^2.16.0",
     "@heroicons/react": "^2.2.0",
     "@next-auth/mongodb-adapter": "^1.1.3",
     "@react-google-maps/api": "^2.20.8",
@@ -24,6 +25,7 @@
     "react-dom": "19.2.4",
     "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
+    "react-qr-code": "^2.2.0",
     "swr": "^2.4.2",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"

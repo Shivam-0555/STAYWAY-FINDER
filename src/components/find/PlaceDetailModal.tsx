@@ -117,19 +117,72 @@ function InfoRow({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+function asStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string" && item.trim() !== "")
+    : [];
+}
+
+function asBoolean(value: unknown): boolean | undefined {
+  return typeof value === "boolean" ? value : undefined;
+}
+
 // ─── Per-category dynamic sections ───────────────────────────────────────────
 
 function HostelSection({ p }: { p: PlaceDTO }) {
-  const amenities: string[] = Array.isArray(p.amenities) ? p.amenities : [];
+  const amenities: string[] = asStringArray((p as any).studentFacilities ?? p.amenities);
+  const rows: Array<{ label: string; value: string | number }> = [];
 
-  if (!amenities.length && !p.budget) return null;
+  if (p.studentScore != null) {
+    rows.push({ label: "Student Score", value: `${p.studentScore}/100` });
+  }
+  if (p.budget != null) {
+    rows.push({ label: "Monthly Budget", value: `₹${p.budget}` });
+  }
+  if ((p as any).roomType || (p as any).roomTypeName) {
+    rows.push({ label: "Room Type", value: (p as any).roomType || (p as any).roomTypeName });
+  }
+  if (asBoolean((p as any).foodIncluded) !== undefined) {
+    rows.push({ label: "Food Included", value: asBoolean((p as any).foodIncluded) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).wifi) !== undefined) {
+    rows.push({ label: "WiFi", value: asBoolean((p as any).wifi) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).laundry) !== undefined) {
+    rows.push({ label: "Laundry", value: asBoolean((p as any).laundry) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).cctv) !== undefined) {
+    rows.push({ label: "CCTV", value: asBoolean((p as any).cctv) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).powerBackup) !== undefined) {
+    rows.push({ label: "Power Backup", value: asBoolean((p as any).powerBackup) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).studyArea) !== undefined) {
+    rows.push({ label: "Study Area", value: asBoolean((p as any).studyArea) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).commonRoom) !== undefined) {
+    rows.push({ label: "Common Room", value: asBoolean((p as any).commonRoom) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).security) !== undefined) {
+    rows.push({ label: "Security", value: asBoolean((p as any).security) ? "Yes" : "No" });
+  }
+  if (asBoolean((p as any).parking) !== undefined) {
+    rows.push({ label: "Parking", value: asBoolean((p as any).parking) ? "Yes" : "No" });
+  }
+  if ((p as any).gender || (p as any).genderType || (p as any).boysGirlsCoed || (p as any).coedType) {
+    rows.push({ label: "Boys/Girls/Co-ed", value: (p as any).gender || (p as any).genderType || (p as any).boysGirlsCoed || (p as any).coedType });
+  }
+
+  if (!rows.length && !amenities.length) return null;
 
   return (
     <>
-      {!!p.budget && (
-        <Section icon={<Building size={13} />} title="Pricing" accent="text-emerald-400">
-          <InfoRow label="Monthly Budget" value={`₹${p.budget}`} />
-        </Section>
+      {rows.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {rows.map((row) => (
+            <InfoRow key={row.label} label={row.label} value={row.value} />
+          ))}
+        </div>
       )}
 
       {amenities.length > 0 && (
@@ -146,53 +199,50 @@ function HostelSection({ p }: { p: PlaceDTO }) {
 }
 
 function FoodSection({ p }: { p: PlaceDTO }) {
-  const dishes: string[] = Array.isArray(p.popularDishes) ? p.popularDishes : [];
-  const payments: string[] = Array.isArray(p.paymentMethods) ? p.paymentMethods : [];
-
-  // Boolean flags
+  const dishes: string[] = asStringArray((p as any).popularDishes ?? p.popularDishes);
+  const payments: string[] = asStringArray((p as any).paymentMethods ?? p.paymentMethods);
   const flags: string[] = [
-    p.delivery === true && "Delivery",
-    p.takeaway === true && "Takeaway",
-    p.outdoorSeating === true && "Outdoor Seating",
-    p.indoorSeating === true && "Indoor Seating",
-    p.ac === true && "Air Conditioned",
-    p.fastService === true && "Fast Service",
+    asBoolean((p as any).delivery ?? p.delivery) === true && "Delivery Available",
+    asBoolean((p as any).takeaway ?? p.takeaway) === true && "Takeaway",
+    asBoolean((p as any).indoorSeating ?? p.indoorSeating) === true && "Indoor Seating",
+    asBoolean((p as any).outdoorSeating ?? p.outdoorSeating) === true && "Outdoor Seating",
+    asBoolean((p as any).fastService ?? p.fastService) === true && "Fast Service",
+    asBoolean((p as any).ac ?? (p as any).AC) === true && "A/C Available",
   ].filter(Boolean) as string[];
 
-  const hasAny =
-    dishes.length || payments.length || flags.length || p.foodType || p.openingHours || p.averageCost || p.studentDiscount;
+  const rows: Array<{ label: string; value: string | number }> = [];
+  if (p.foodType) rows.push({ label: "Food Type", value: p.foodType });
+  if (p.openingHours) rows.push({ label: "Opening Hours", value: p.openingHours });
+  if (p.averageCost != null) rows.push({ label: "Average Cost", value: `₹${p.averageCost}` });
+  if (p.studentDiscount) rows.push({ label: "Student Discount", value: p.studentDiscount });
+
+  const hasAny = dishes.length || payments.length || flags.length || rows.length;
 
   if (!hasAny) return null;
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2">
-        {p.foodType && <InfoRow label="Food Type" value={p.foodType} />}
-        {p.openingHours && <InfoRow label="Hours" value={p.openingHours} />}
-        {p.averageCost != null && <InfoRow label="Avg. Cost" value={`₹${p.averageCost}`} />}
-        {p.budget != null && <InfoRow label="Starting From" value={`₹${p.budget}`} />}
-      </div>
-
-      {p.studentDiscount && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 flex items-center gap-2">
-          <ShieldCheck size={14} className="shrink-0" />
-          {p.studentDiscount}
+      {rows.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {rows.map((row) => (
+            <InfoRow key={row.label} label={row.label} value={row.value} />
+          ))}
         </div>
       )}
 
-      {dishes.length > 0 && (
-        <Section icon={<Info size={13} />} title="Popular Dishes" accent="text-orange-400">
-          <ChipList items={dishes} color="bg-orange-500/10 border-orange-500/20 text-orange-200" />
-        </Section>
-      )}
-
       {flags.length > 0 && (
-        <Section icon={<CheckCircle2 size={13} />} title="Features" accent="text-blue-400">
+        <Section icon={<CheckCircle2 size={13} />} title="Food Features" accent="text-blue-400">
           <div className="flex flex-wrap gap-1.5">
             {flags.map((f) => (
               <Feature key={f} label={f} />
             ))}
           </div>
+        </Section>
+      )}
+
+      {dishes.length > 0 && (
+        <Section icon={<Info size={13} />} title="Popular Dishes" accent="text-orange-400">
+          <ChipList items={dishes} color="bg-orange-500/10 border-orange-500/20 text-orange-200" />
         </Section>
       )}
 
@@ -206,7 +256,7 @@ function FoodSection({ p }: { p: PlaceDTO }) {
 }
 
 function HospitalSection({ p }: { p: PlaceDTO }) {
-  const services: string[] = Array.isArray(p.medicalServices) ? p.medicalServices : [];
+  const services: string[] = asStringArray((p as any).medicalServices ?? (p as any).services);
   if (!services.length) return null;
 
   return (
@@ -222,23 +272,23 @@ function HospitalSection({ p }: { p: PlaceDTO }) {
 
 function ATMSection({ p }: { p: PlaceDTO }) {
   const flags: string[] = [
-    p.cashWithdrawal === true && "Cash Withdrawal",
-    p.cashDeposit === true && "Cash Deposit",
-    p.passbookUpdate === true && "Passbook Update",
-    p.miniStatement === true && "Mini Statement",
-    p.cardlessWithdrawal === true && "Cardless Withdrawal",
-    p.wheelchairAccess === true && "Wheelchair Access",
-    p.availability24x7 === true && "24×7 Available",
+    asBoolean((p as any).cashWithdrawal ?? p.cashWithdrawal) === true && "Cash Withdrawal",
+    asBoolean((p as any).cashDeposit ?? p.cashDeposit) === true && "Cash Deposit",
+    asBoolean((p as any).passbookUpdate ?? p.passbookUpdate) === true && "Passbook Update",
+    asBoolean((p as any).miniStatement ?? p.miniStatement) === true && "Mini Statement",
+    asBoolean((p as any).cardlessWithdrawal ?? p.cardlessWithdrawal) === true && "Cardless Withdrawal",
+    asBoolean((p as any).wheelchairAccess ?? p.wheelchairAccess) === true && "Wheelchair Access",
+    asBoolean((p as any).availability24x7 ?? p.availability24x7) === true && "24×7 Available",
   ].filter(Boolean) as string[];
 
-  const hasAny = flags.length || p.branchType;
+  const hasAny = flags.length || (p as any).branchType || p.branchType;
   if (!hasAny) return null;
 
   return (
     <>
-      {p.branchType && (
+      {((p as any).branchType || p.branchType) && (
         <div className="grid grid-cols-1 gap-2">
-          <InfoRow label="Branch Type" value={p.branchType} />
+          <InfoRow label="Branch Type" value={(p as any).branchType || p.branchType} />
         </div>
       )}
       {flags.length > 0 && (
@@ -256,26 +306,30 @@ function ATMSection({ p }: { p: PlaceDTO }) {
 
 function TransportSection({ p }: { p: PlaceDTO }) {
   const flags: string[] = [
-    p.ticketCounter === true && "Ticket Counter",
-    p.parking === true && "Parking",
-    p.waitingArea === true && "Waiting Area",
-    p.nightService === true && "Night Service",
-    p.wheelchairAccess === true && "Wheelchair Access",
+    asBoolean((p as any).ticketCounter ?? p.ticketCounter) === true && "Ticket Counter",
+    asBoolean((p as any).parking ?? p.parking) === true && "Parking",
+    asBoolean((p as any).waitingArea ?? p.waitingArea) === true && "Waiting Area",
+    asBoolean((p as any).nightService ?? p.nightService) === true && "Night Service",
+    asBoolean((p as any).wheelchairAccess ?? p.wheelchairAccess) === true && "Wheelchair Access",
   ].filter(Boolean) as string[];
 
-  const hasAny = flags.length || p.transportType || p.operatingHours || p.platformInfo;
+  const hasAny = flags.length || (p as any).transportType || p.transportType || (p as any).operatingHours || p.operatingHours || (p as any).platformInfo || p.platformInfo;
   if (!hasAny) return null;
 
   return (
     <>
       <div className="grid grid-cols-2 gap-2">
-        {p.transportType && <InfoRow label="Type" value={p.transportType} />}
-        {p.operatingHours && <InfoRow label="Hours" value={p.operatingHours} />}
-        {p.platformInfo && (
+        {(p as any).transportType || p.transportType ? (
+          <InfoRow label="Transport Type" value={(p as any).transportType || p.transportType} />
+        ) : null}
+        {(p as any).operatingHours || p.operatingHours ? (
+          <InfoRow label="Operating Hours" value={(p as any).operatingHours || p.operatingHours} />
+        ) : null}
+        {(p as any).platformInfo || p.platformInfo ? (
           <div className="col-span-2">
-            <InfoRow label="Platform Info" value={p.platformInfo} />
+            <InfoRow label="Platform Information" value={(p as any).platformInfo || p.platformInfo} />
           </div>
-        )}
+        ) : null}
       </div>
       {flags.length > 0 && (
         <Section icon={<CheckCircle2 size={13} />} title="Transport Facilities" accent="text-purple-400">
@@ -292,16 +346,21 @@ function TransportSection({ p }: { p: PlaceDTO }) {
 
 function EmergencySection({ p }: { p: PlaceDTO }) {
   const flags: string[] = [
-    p.womensHelpDesk === true && "Women's Help Desk",
-    p.availability24x7 === true && "24×7 Active",
+    asBoolean((p as any).womensHelpDesk ?? p.womensHelpDesk) === true && "Women's Help Desk",
+    asBoolean((p as any).availability24x7 ?? p.availability24x7) === true && "24×7 Availability",
   ].filter(Boolean) as string[];
 
   const hasAny =
     flags.length ||
+    (p as any).stationType ||
     p.stationType ||
+    (p as any).emergencyContact ||
     p.emergencyContact ||
+    (p as any).nearestHospital ||
     p.nearestHospital ||
+    (p as any).responseTime ||
     p.responseTime ||
+    (p as any).safetyNotes ||
     p.safetyNotes;
 
   if (!hasAny) return null;
@@ -309,18 +368,24 @@ function EmergencySection({ p }: { p: PlaceDTO }) {
   return (
     <>
       <div className="grid grid-cols-2 gap-2">
-        {p.stationType && <InfoRow label="Station Type" value={p.stationType} />}
-        {p.emergencyContact && <InfoRow label="Emergency No." value={p.emergencyContact} />}
-        {p.responseTime && <InfoRow label="Response Time" value={p.responseTime} />}
-        {p.nearestHospital && (
+        {(p as any).stationType || p.stationType ? (
+          <InfoRow label="Station Type" value={(p as any).stationType || p.stationType} />
+        ) : null}
+        {(p as any).emergencyContact || p.emergencyContact ? (
+          <InfoRow label="Emergency Contact" value={(p as any).emergencyContact || p.emergencyContact} />
+        ) : null}
+        {(p as any).responseTime || p.responseTime ? (
+          <InfoRow label="Average Response Time" value={(p as any).responseTime || p.responseTime} />
+        ) : null}
+        {(p as any).nearestHospital || p.nearestHospital ? (
           <div className="col-span-2">
-            <InfoRow label="Nearest Hospital" value={p.nearestHospital} />
+            <InfoRow label="Nearest Hospital" value={(p as any).nearestHospital || p.nearestHospital} />
           </div>
-        )}
+        ) : null}
       </div>
 
       {flags.length > 0 && (
-        <Section icon={<CheckCircle2 size={13} />} title="Services" accent="text-rose-400">
+        <Section icon={<CheckCircle2 size={13} />} title="Emergency Services" accent="text-rose-400">
           <div className="flex flex-wrap gap-1.5">
             {flags.map((f) => (
               <Feature key={f} label={f} />
@@ -329,12 +394,12 @@ function EmergencySection({ p }: { p: PlaceDTO }) {
         </Section>
       )}
 
-      {p.safetyNotes && (
+      {(p as any).safetyNotes || p.safetyNotes ? (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 leading-relaxed flex items-start gap-2">
           <AlertTriangle size={14} className="shrink-0 text-amber-400 mt-0.5" />
-          {p.safetyNotes}
+          {(p as any).safetyNotes || p.safetyNotes}
         </div>
-      )}
+      ) : null}
     </>
   );
 }
@@ -359,7 +424,20 @@ export default function PlaceDetailModal({ place, onClose, onViewMap }: PlaceDet
   if (!place) return null;
 
   const categoryKey = (place.category ?? "").toLowerCase();
+  const placeType = (place.type ?? place.category ?? "").toLowerCase();
   const heroImage = getHeroImage(place);
+  console.log("[PlaceDetailModal] runtime place", {
+    categoryKey,
+    placeType,
+    category: place.category,
+    type: place.type,
+    hasAmenities: Boolean(place.amenities),
+    hasPopularDishes: Boolean(place.popularDishes),
+    hasMedicalServices: Boolean(place.medicalServices),
+    hasTransportation: Boolean(place.transportType || place.operatingHours),
+    hasEmergencyFields: Boolean(place.stationType || place.emergencyContact),
+    place,
+  });
   const colorStyle = CATEGORY_COLORS[categoryKey] ?? "bg-slate-500/20 text-slate-300 border-slate-500/30";
   const categoryLabel = CATEGORY_LABELS[categoryKey] ?? place.category;
   const rating = place.rating;
@@ -491,12 +569,12 @@ export default function PlaceDetailModal({ place, onClose, onViewMap }: PlaceDet
           )}
 
           {/* Category-specific dynamic sections */}
-          {categoryKey === "hostel" && <HostelSection p={place} />}
-          {categoryKey === "food" && <FoodSection p={place} />}
-          {categoryKey === "clinic" && <HospitalSection p={place} />}
-          {categoryKey === "atm" && <ATMSection p={place} />}
-          {categoryKey === "bus" && <TransportSection p={place} />}
-          {categoryKey === "emergency" && <EmergencySection p={place} />}
+          {placeType === "hostel" && <HostelSection p={place} />}
+          {placeType === "food" && <FoodSection p={place} />}
+          {(placeType === "hospital" || categoryKey === "clinic") && <HospitalSection p={place} />}
+          {placeType === "atm" && <ATMSection p={place} />}
+          {(placeType === "transit" || placeType === "bus") && <TransportSection p={place} />}
+          {placeType === "emergency" && <EmergencySection p={place} />}
 
           {/* Contact & Links */}
           {(place.phone || place.website) && (

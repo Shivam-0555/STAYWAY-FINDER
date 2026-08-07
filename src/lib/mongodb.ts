@@ -117,7 +117,17 @@ async function seedRealPlacesIfNeeded() {
       // Sync all fields for existing docs so category-specific data stays current
       for (const placeData of placesToUpsert) {
         const { name, ...rest } = placeData;
-        await Place.updateOne({ name }, { $set: rest });
+        await Place.updateOne(
+          {
+            $or: [
+              { name },
+              { lat: placeData.lat, lng: placeData.lng },
+              { address: placeData.address },
+            ],
+          },
+          { $set: { ...rest, name } },
+          { upsert: true }
+        );
       }
       console.log("Synced category-specific fields for existing places.");
     }
