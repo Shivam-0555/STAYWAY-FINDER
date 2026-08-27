@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Place } from "@/models/Place";
 
+export const dynamic = "force-dynamic";
+
 const PARUL_LAT = 22.7796;
 const PARUL_LNG = 73.6908;
 
