@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+import { connectToDatabase } from '@/lib/mongodb';
 import { Place } from '@/models/Place';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/staywayfinder';
-    
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(MONGODB_URI, { dbName: 'staywayfinder' });
-    }
-    
+    await connectToDatabase();
     const count = await Place.countDocuments();
     const dbName = mongoose.connection.db?.databaseName;
     const collections = await mongoose.connection.db?.listCollections().toArray();
