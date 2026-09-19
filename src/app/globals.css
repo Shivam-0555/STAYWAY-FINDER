@@ -24,13 +24,34 @@ body {
   margin: 0;
 }
 
+.dashboard-readable {
+  color: #f8fafc;
+}
+
+.dashboard-readable ::selection {
+  background: transparent;
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+select option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
 /* Glassmorphism utilities */
 @layer utilities {
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl;
   }
   .glass-panel {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 text-slate-100 shadow-2xl;
   }
   .section-anchor {
     scroll-margin-top: 6rem;

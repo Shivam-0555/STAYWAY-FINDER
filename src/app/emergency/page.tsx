@@ -124,7 +124,7 @@ export default function EmergencyPage() {
         <h1 className="text-4xl font-bold text-red-500 mb-4 flex items-center justify-center gap-3">
           <AlertTriangle size={36} /> Emergency Help
         </h1>
-        <p className="text-gray-400">Immediate assistance and quick access to essential services.</p>
+        <p className="text-slate-600">Immediate assistance and quick access to essential services.</p>
 
         {/* Live Location Badge */}
         <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-sm">
@@ -133,11 +133,11 @@ export default function EmergencyPage() {
           ) : (
             <MapPin size={14} className="text-blue-400" />
           )}
-          <span className="text-blue-300 font-medium">
+          <span className="text-blue-700 font-medium">
             {locating ? "Detecting your location..." : `📍 ${locationName}`}
           </span>
           {!locating && (
-            <button onClick={detectLocation} className="text-blue-400 hover:text-blue-300 text-xs underline ml-1">
+            <button onClick={detectLocation} className="text-blue-600 hover:text-blue-700 text-xs underline ml-1">
               Refresh
             </button>
           )}
@@ -146,7 +146,7 @@ export default function EmergencyPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* SOS Button Area */}
-        <GlassCard className="flex flex-col items-center justify-center py-12 border-red-500/20 bg-red-950/10 relative overflow-hidden">
+        <GlassCard className="flex flex-col items-center justify-center py-12 border-red-200 bg-red-50 text-slate-900 relative overflow-hidden">
           {sosActive && (
             <motion.div
               initial={{ scale: 0.8, opacity: 1 }}
@@ -169,7 +169,7 @@ export default function EmergencyPage() {
         </GlassCard>
 
         {/* Emergency Contacts */}
-        <GlassCard className="flex flex-col">
+        <GlassCard className="flex flex-col border-slate-200 bg-white text-slate-900">
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
             <Phone className="text-blue-400" /> Quick Dial
           </h2>
@@ -181,7 +181,7 @@ export default function EmergencyPage() {
             )}
 
             {contacts.map((contact) => (
-              <div key={contact._id} className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
+              <div key={contact._id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <p className="font-semibold">{contact.name}</p>
@@ -205,14 +205,14 @@ export default function EmergencyPage() {
       </div>
 
       {/* Nearest Medical Facility */}
-      <GlassCard className="border-emerald-500/20 bg-emerald-950/10">
+      <GlassCard className="border-emerald-200 bg-emerald-50 text-slate-900">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Stethoscope className="text-emerald-400" /> Nearest Medical Facility
         </h2>
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-emerald-300">SSG Hospital, Vadodara</h3>
-            <p className="text-gray-400 mb-2">Jail Road, Vadodara • 1.2 km away</p>
+            <p className="text-slate-600 mb-2">Jail Road, Vadodara • 1.2 km away</p>
             <div className="flex gap-2 flex-wrap">
               <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold">
                 Open 24/7 • ER Available

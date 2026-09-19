@@ -34,7 +34,16 @@ export function Navbar() {
   const { user, signOut, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [activeHash, setActiveHash] = useState("");
   const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateActiveHash = () => setActiveHash(window.location.hash);
+
+    updateActiveHash();
+    window.addEventListener("hashchange", updateActiveHash);
+    return () => window.removeEventListener("hashchange", updateActiveHash);
+  }, []);
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -71,9 +80,11 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 xl:gap-2 lg:flex">
           {navItems.map((item) => {
             const isHashLink = item.href.startsWith("/#");
-            const active = isHashLink 
-              ? pathname === "/" 
-              : pathname === item.href;
+            const active = isHashLink
+              ? pathname === "/" && activeHash === item.href.slice(1)
+              : item.href === "/"
+                ? pathname === "/" && activeHash === ""
+                : pathname === item.href;
 
             return (
               <Link
@@ -182,7 +193,12 @@ export function Navbar() {
           <div className="flex flex-col gap-1.5">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const active = pathname === item.href;
+              const isHashLink = item.href.startsWith("/#");
+              const active = isHashLink
+                ? pathname === "/" && activeHash === item.href.slice(1)
+                : item.href === "/"
+                  ? pathname === "/" && activeHash === ""
+                  : pathname === item.href;
               return (
                 <Link
                   key={item.label}

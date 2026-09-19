@@ -403,7 +403,7 @@ function DashboardContent() {
   };
 
   return (
-    <div className="min-h-screen w-full relative grid grid-cols-1 md:grid-cols-[minmax(340px,420px)_1fr] md:h-screen overflow-hidden">
+    <div className="dashboard-readable min-h-screen w-full relative grid grid-cols-1 md:grid-cols-[minmax(340px,420px)_1fr] md:h-screen overflow-hidden">
       {/* Side Panel */}
       <div className="w-full p-3 md:p-4 z-20 flex flex-col gap-3 relative md:sticky md:top-0 md:h-screen max-h-screen overflow-y-auto">
         
