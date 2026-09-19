@@ -60,7 +60,12 @@ function MapController({ center, zoom }: { center: { lat: number; lng: number };
   return null;
 }
 
-export default function HeroMap() {
+interface HeroMapProps {
+  className?: string;
+  previewOnly?: boolean;
+}
+
+export default function HeroMap({ className, previewOnly = false }: HeroMapProps) {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [activeMarker, setActiveMarker] = useState<MarkerItem | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
@@ -155,38 +160,39 @@ export default function HeroMap() {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl border border-slate-200 shadow-[0_18px_60px_rgba(15,23,42,0.16)]">
-      <div className="absolute inset-0" />
+    <div className={`relative h-full w-full overflow-hidden ${className || "rounded-3xl border border-slate-200 shadow-sm"}`}>
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={14}
-        scrollWheelZoom
+        scrollWheelZoom={!previewOnly}
         zoomControl={false}
-        dragging
-        className="h-full w-full"
+        dragging={!previewOnly}
+        className="h-full w-full z-0"
         style={{ height: "100%", width: "100%" }}
         ref={mapRef}
       >
         <MapController center={center} zoom={14} />
-        <LayersControl position="topright">
-          <LayersControl.BaseLayer checked={viewMode === "light"} name="OpenStreetMap">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer checked={viewMode === "satellite"} name="Humanitarian">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-            />
-          </LayersControl.BaseLayer>
-        </LayersControl>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-        <ZoomControl position="bottomright" />
+        {!previewOnly && <ZoomControl position="bottomright" />}
 
-        <Polyline pathOptions={{ color: "#22c55e", weight: 5, opacity: 0.95 }} positions={safeRoute} />
-        <Polyline pathOptions={{ color: "#ef4444", weight: 4, opacity: 0.9, dashArray: "8 8" }} positions={riskyRoute} />
+        {/* Clean blue navigation route matching reference screenshot */}
+        <Polyline 
+          pathOptions={{ 
+            color: "#2563eb", 
+            weight: 5, 
+            opacity: 0.9,
+            lineCap: "round",
+            lineJoin: "round"
+          }} 
+          positions={safeRoute} 
+        />
+        {!previewOnly && (
+          <Polyline pathOptions={{ color: "#ef4444", weight: 3, opacity: 0.7, dashArray: "6 6" }} positions={riskyRoute} />
+        )}
 
         {userLocation && (
           <Marker position={[userLocation.lat, userLocation.lng]} icon={createPulseIcon()} />
@@ -227,37 +233,46 @@ export default function HeroMap() {
         )}
       </MapContainer>
 
-      <div className="absolute left-3 top-3 z-1000 flex items-center gap-2 rounded-full border border-sky-500/30 bg-white/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-slate-700 shadow-lg backdrop-blur">
-        <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-500" />
-        Live Preview
-      </div>
-
-      <div className="absolute right-3 top-3 z-1000 flex flex-col gap-2">
-        <button type="button" onClick={() => setViewMode((prev) => (prev === "light" ? "satellite" : "light"))} className="rounded-full border border-slate-200 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-lg backdrop-blur">
-          {viewMode === "light" ? "Map / Satellite" : "Satellite / Map"}
-        </button>
-        <button type="button" onClick={focusOnLocation} className="rounded-full border border-slate-200 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-lg backdrop-blur">
-          Locate Me
-        </button>
-      </div>
-
-      <div className="absolute bottom-3 left-3 right-3 z-1000 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white/85 px-3 py-2 text-[11px] font-medium text-slate-600 shadow-lg backdrop-blur">
-        <div className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-blue-50 px-2 py-1 text-blue-700">🏠 Hostel</span>
-          <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">🍔 Food</span>
-          <span className="rounded-full bg-red-50 px-2 py-1 text-red-700">🏥 Hospital</span>
-          <span className="rounded-full bg-rose-50 px-2 py-1 text-rose-700">🚨 Emergency</span>
-          <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">🚌 Transit</span>
-          <span className="rounded-full bg-violet-50 px-2 py-1 text-violet-700">🏧 ATM</span>
+      {/* Floating Badge for preview mode or full mode */}
+      {previewOnly ? (
+        <div className="absolute bottom-3 left-3 z-1000 flex items-center gap-2 rounded-full bg-slate-900/90 px-3 py-1.5 text-[11px] font-medium text-white shadow-md backdrop-blur-sm">
+          <span className="h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
+          You are here
         </div>
-        <div className="flex items-center gap-2 text-slate-500">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" /> Safe Route
-          <span className="ml-2 h-2 w-2 rounded-full bg-red-500" /> Risky Route
-        </div>
-      </div>
+      ) : (
+        <>
+          <div className="absolute left-3 top-3 z-1000 flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur">
+            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-500" />
+            Live Preview
+          </div>
 
-      {isLoadingLocation && (
-        <div className="absolute bottom-16 left-3 z-1000 rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-medium text-slate-600 shadow-lg backdrop-blur">
+          <div className="absolute right-3 top-3 z-1000 flex items-center gap-2">
+            <button 
+              type="button" 
+              onClick={focusOnLocation} 
+              className="rounded-full border border-slate-200 bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur hover:bg-slate-50 transition"
+            >
+              Locate Me
+            </button>
+          </div>
+
+          <div className="absolute bottom-3 left-3 right-3 z-1000 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/95 px-3.5 py-2 text-[11px] font-medium text-slate-600 shadow-md backdrop-blur">
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-blue-700">🏠 Hostels & PGs</span>
+              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">🍔 Food Options</span>
+              <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">🏧 ATMs</span>
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">🚌 Bus Stops</span>
+              <span className="rounded-full bg-rose-50 px-2 py-0.5 text-rose-700">🚨 Emergency Services</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-500">
+              <span className="h-2 w-2 rounded-full bg-blue-600" /> Safe Route
+            </div>
+          </div>
+        </>
+      )}
+
+      {isLoadingLocation && !previewOnly && (
+        <div className="absolute bottom-16 left-3 z-1000 rounded-full border border-slate-200 bg-white/95 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm backdrop-blur">
           Detecting your location…
         </div>
       )}
